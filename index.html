@@ -330,7 +330,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
   font-weight: 500;
 }
 
-.jatu { background: rgba(255,187,153,0.25); color: #c45e20; }
+.jatum { background: rgba(255,187,153,0.25); color: #c45e20; }
 .dao { background: rgba(201,158,245,0.25); color: #6b35b5; }
 .yama { background: rgba(255,153,204,0.2); color: #c0357a; }
 
@@ -659,7 +659,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
   <div class="results-header">
     <div class="results-count" id="resultsCount"></div>
     <div class="league-legend">
-      <div class="legend-item"><span class="badge-league jatu">Jatu</span> 10K–39K</div>
+      <div class="legend-item"><span class="badge-league jatu">Jatum</span> 10K–39K</div>
       <div class="legend-item"><span class="badge-league dao">Dao</span> 40K–79K</div>
       <div class="legend-item"><span class="badge-league yama">Yama</span> 80K–100K</div>
     </div>
@@ -777,7 +777,7 @@ function renderGrid() {
   let filtered = allData.filter(d => {
     const f = parseFloat(d.followers);
     if (f > 100000 || f < 10000) return false;
-    if (activeCat !== 'all' && d.category !== activeCat) return false;
+    if (activeCat !== 'all' && d.Category !== activeCat) return false;
     if (search) {
       const name = (d.channel_name || '').toLowerCase();
       const user = (d.channel_username || '').toLowerCase();
@@ -820,7 +820,7 @@ function renderGrid() {
           <div class="card-handle">@${d.channel_username}</div>
           <div class="card-badges">
             <span class="badge-league ${league.cls}" title="${league.desc}">${league.label}</span>
-            <span class="badge-cat">${d.category}</span>
+            <span class="badge-cat">${d.Category}</span>
           </div>
         </div>
       </div>
@@ -953,7 +953,7 @@ async function init() {
       return f >= 10000 && f <= 100000;
     });
 
-    const categories = [...new Set(allData.map(d => d.category).filter(Boolean))].sort();
+    const categories = [...new Set(allData.map(d => d.Category).filter(Boolean))].sort();
     buildCategoryFilters(categories);
 
     document.getElementById('totalCreators').textContent = allData.length;
