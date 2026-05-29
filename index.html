@@ -1,967 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAKAR — We don't track the famous. We track the ones audiences actually listen to.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  /* ---- แก้สีตรงนี้ได้เลย ---- */
-  --logo-color: #000000;   /* สี logo MAKAR ทั้ง nav และ hero */
-  --hero-bg: #FF9300;      /* พื้นหลัง hero banner */
-  --hero-text: rgba(255,255,255,0.8); /* tagline ใต้ logo */
-  --primary: #000000;      /* ปุ่ม active, Quality Score, links */
-  --pro-btn-bg: #0A1A4A;   /* ปุ่ม Access PRO */
-  /* -------------------------------- */
-  --pink: #FF99CC;
-  --peach: #FFBB99;
-  --lavender: #C99EF5;
-  --offwhite: #F5F5F0;
-  --mid: #444444;
-  --light: #888888;
-  --border: rgba(0,0,0,0.08);
-  --card-bg: #FFFFFF;
-  --page-bg: #F5F5F0;
-  --dark-text: #1A1A1A;      /* สีตัวหนังสือ body, dropdown, stat numbers */
-  --tooltip-bg: #1A1A1A;     /* พื้นหลัง tooltip */
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--page-bg);
-  color: var(--dark-text);
-  min-height: 100vh;
-}
-
-/* NAV */
-nav {
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.logo {
-  font-family: Verdana, sans-serif;
-  font-weight: 700;
-  font-style: italic;
-  font-size: 22px;
-  color: var(--logo-color);
-  letter-spacing: -0.5px;
-}
-
-.nav-right { display: flex; align-items: center; gap: 12px; }
-
-.pro-btn {
-  background: var(--pro-btn-bg);
-  color: #fff;
-  border: none;
-  padding: 7px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.pro-btn:hover { opacity: 0.85; }
-
-.pro-badge {
-  background: var(--lavender);
-  color: #4a2d8a;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  display: none;
-}
-
-/* HERO */
-.hero {
-  background: var(--hero-bg);
-  color: #fff;
-  padding: 3rem 2rem 2.5rem;
-  text-align: center;
-}
-
-.hero-title {
-  font-family: Verdana, sans-serif;
-  font-weight: 700;
-  font-style: italic;
-  font-size: 48px;
-  color: var(--logo-color);
-  line-height: 1;
-  margin-bottom: 12px;
-}
-
-.hero-sub {
-  font-size: 15px;
-  color: var(--hero-text);
-  margin-bottom: 2rem;
-}
-
-/* STATS BAR */
-.stats-bar {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
-
-.stat-item { text-align: center; }
-.stat-num { font-size: 22px; font-weight: 700; color: var(--primary); }
-.stat-label { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 2px; }
-
-/* MAIN */
-main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-
-/* CONTROLS */
-.controls {
-  background: #fff;
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--border);
-}
-
-.search-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 1rem;
-  align-items: center;
-}
-
-.search-wrap {
-  flex: 1;
-  position: relative;
-}
-
-.search-wrap input {
-  width: 100%;
-  padding: 10px 16px 10px 42px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  background: var(--page-bg);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.search-wrap input:focus { border-color: var(--primary); }
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--light);
-  font-size: 16px;
-}
-
-.filter-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.filter-label {
-  font-size: 12px;
-  color: var(--light);
-  margin-right: 4px;
-}
-
-.filter-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  background: #fff;
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.15s;
-  color: var(--mid);
-}
-.filter-btn:hover { border-color: var(--primary); color: var(--primary); }
-.filter-btn.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-
-.divider {
-  width: 1px;
-  height: 20px;
-  background: var(--border);
-  margin: 0 4px;
-}
-
-/* SORT ROW */
-.sort-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.sort-select {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1.5px solid var(--border);
-  background: #fff;
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-  color: var(--dark-text);
-  outline: none;
-}
-.sort-select:focus { border-color: var(--primary); }
-
-/* PRO LOCK */
-.pro-lock {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1.5px dashed var(--lavender);
-  background: rgba(201,158,245,0.08);
-  font-size: 13px;
-  color: #7c4bb5;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.pro-lock:hover { background: rgba(201,158,245,0.15); }
-
-/* GRID */
-.results-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.results-count {
-  font-size: 13px;
-  color: var(--light);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-/* CARD */
-.card {
-  background: var(--card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  padding: 1.25rem;
-  transition: transform 0.15s, box-shadow 0.15s;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-
-.card-top {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 1rem;
-}
-
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--peach), var(--primary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
-  color: #fff;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.card-info { flex: 1; min-width: 0; }
-
-.card-name {
-  font-size: 15px;
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
-}
-
-.card-handle {
-  font-size: 12px;
-  color: var(--light);
-}
-
-.card-badges {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-top: 6px;
-}
-
-.badge-league {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-weight: 500;
-}
-
-.jatu { background: rgba(255,187,153,0.25); color: #c45e20; }
-.dao { background: rgba(201,158,245,0.25); color: #6b35b5; }
-.yama { background: rgba(255,153,204,0.2); color: #c0357a; }
-
-.badge-cat {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  background: rgba(0,0,0,0.05);
-  color: var(--mid);
-  font-weight: 500;
-}
-
-/* RANK BADGE */
-.rank-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--light);
-}
-
-/* STATS */
-.card-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 1rem;
-}
-
-.stat-box {
-  background: var(--page-bg);
-  border-radius: 8px;
-  padding: 8px 10px;
-}
-
-.stat-box-label {
-  font-size: 10px;
-  color: var(--light);
-  margin-bottom: 2px;
-}
-
-.stat-box-val {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--dark-text);
-}
-
-/* QUALITY SCORE */
-.quality-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.quality-label {
-  font-size: 12px;
-  color: var(--light);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.quality-info {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.5px solid var(--light);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  cursor: pointer;
-  position: relative;
-  color: var(--light);
-}
-
-.quality-tooltip {
-  display: none;
-  position: absolute;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--tooltip-bg);
-  color: #fff;
-  font-size: 11px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  width: 220px;
-  z-index: 10;
-  line-height: 1.5;
-}
-
-.quality-info:hover .quality-tooltip { display: block; }
-
-.quality-score {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-/* TT LINK */
-.tt-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--light);
-  text-decoration: none;
-  margin-top: 10px;
-  transition: color 0.15s;
-}
-.tt-link:hover { color: var(--primary); }
-
-/* MODAL - PRO */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: #fff;
-  border-radius: 20px;
-  padding: 2rem;
-  width: 380px;
-  max-width: 90vw;
-}
-
-.modal-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.modal-sub {
-  font-size: 13px;
-  color: var(--light);
-  margin-bottom: 1.5rem;
-}
-
-.modal input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  margin-bottom: 10px;
-  outline: none;
-}
-.modal input:focus { border-color: var(--primary); }
-
-.modal-go {
-  width: 100%;
-  padding: 12px;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 6px;
-  transition: opacity 0.15s;
-}
-.modal-go:hover { opacity: 0.9; }
-
-.modal-close {
-  float: right;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: var(--light);
-  margin-top: -8px;
-}
-
-.modal-error {
-  font-size: 13px;
-  color: #e03b3b;
-  margin-top: 8px;
-  display: none;
-}
-
-/* TOOLTIP SCORE */
-.score-explain {
-  font-size: 11px;
-  color: var(--light);
-  line-height: 1.5;
-}
-
-/* LEAGUE LEGEND */
-.league-legend {
-  display: flex;
-  gap: 16px;
-  margin-left: auto;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: var(--mid);
-}
-
-/* EMPTY */
-.empty {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--light);
-}
-.empty-icon { font-size: 48px; margin-bottom: 12px; }
-
-/* GROWTH CHART (PRO) */
-.growth-section {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.growth-pro-lock {
-  background: rgba(201,158,245,0.08);
-  border: 1.5px dashed var(--lavender);
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  font-size: 12px;
-  color: #7c4bb5;
-  cursor: pointer;
-}
-
-/* LOADING */
-.loading {
-  text-align: center;
-  padding: 4rem;
-  color: var(--light);
-}
-
-.pulse {
-  display: inline-block;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--primary);
-  animation: pulse 1s infinite;
-  margin: 0 3px;
-}
-.pulse:nth-child(2) { animation-delay: 0.2s; }
-.pulse:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-</style>
-</head>
-<body>
-
-<nav>
-  <div class="logo">MAKAR</div>
-  <div class="nav-right">
-    <span class="pro-badge" id="proBadge">PRO</span>
-    <button class="pro-btn" id="proBtn" onclick="openProModal()">Access PRO</button>
-  </div>
-</nav>
-
-<div class="hero">
-  <div class="hero-title">MAKAR</div>
-  <div class="hero-sub">We don't track the famous. We track the ones audiences actually listen to.</div>
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-num" id="totalCreators">—</div>
-      <div class="stat-label">creators</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" id="totalCategories">—</div>
-      <div class="stat-label">categories</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">10K–100K</div>
-      <div class="stat-label">follower range</div>
-    </div>
-  </div>
-</div>
-
-<main>
-  <div class="controls">
-    <div class="search-row">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search by name or username..." oninput="renderGrid()">
-      </div>
-    </div>
-
-    <div class="filter-row" id="categoryFilters">
-      <span class="filter-label">Category</span>
-      <button class="filter-btn active" data-cat="all" onclick="setCat('all')">All</button>
-    </div>
-
-    <div class="sort-row">
-      <span class="filter-label">Sort by</span>
-      <select class="sort-select" id="sortSelect" onchange="renderGrid()">
-        <option value="quality">Quality Score</option>
-        <option value="followers">Followers</option>
-        <option value="total_likes">Total Likes</option>
-      </select>
-
-      <div class="divider"></div>
-
-      <span class="filter-label">Growth period</span>
-      <button class="filter-btn active" data-period="30" onclick="setPeriod(30)">30 days</button>
-      <button class="filter-btn pro-lock" data-period="60" onclick="requirePro(event, 60)">🔒 60 days</button>
-      <button class="filter-btn pro-lock" data-period="180" onclick="requirePro(event, 180)">🔒 180 days</button>
-      <button class="filter-btn pro-lock" data-period="365" onclick="requirePro(event, 365)">🔒 365 days</button>
-    </div>
-  </div>
-
-  <div class="results-header">
-    <div class="results-count" id="resultsCount"></div>
-    <div class="league-legend">
-      <div class="legend-item"><span class="badge-league jatu">Jatum</span> 10K–39K</div>
-      <div class="legend-item"><span class="badge-league dao">Dao</span> 40K–79K</div>
-      <div class="legend-item"><span class="badge-league yama">Yama</span> 80K–100K</div>
-    </div>
-  </div>
-
-  <div id="gridContainer">
-    <div class="loading"><span class="pulse"></span><span class="pulse"></span><span class="pulse"></span></div>
-  </div>
-</main>
-
-<div class="modal-overlay" id="proModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeProModal()">✕</button>
-    <div class="modal-title">Access PRO</div>
-    <div class="modal-sub">For Agencies & Brands who need deeper insights.</div>
-    <input type="text" id="companyInput" placeholder="Company name">
-    <input type="password" id="passwordInput" placeholder="Password">
-    <button class="modal-go" onclick="submitPro()">GO</button>
-    <div class="modal-error" id="modalError">Invalid company name or password, or access has expired.</div>
-  </div>
-</div>
-
-<script>
-const SHEET_ID = '1cWgB4yd29n_xuMMU3Y43cu5DrDZLtQ3Hff2l-GecusI';
-const CREATORS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=creators`;
-const WEEKLY_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=weekly`;
-const PRO_USERS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=pro_users`;
-
-let allData = [];
-let activeCat = 'all';
-let activePeriod = 30;
-let isPro = false;
-
-function parseGSheet(text) {
-  const json = JSON.parse(text.substring(47).slice(0, -2));
-  const cols = json.table.cols.map(c => c.label);
-  return json.table.rows.map(row => {
-    const obj = {};
-    row.c.forEach((cell, i) => { obj[cols[i]] = cell ? cell.v : ''; });
-    return obj;
-  });
-}
-
-async function fetchSheet(url) {
-  const res = await fetch(url);
-  const text = await res.text();
-  return parseGSheet(text);
-}
-
-function calcQuality(row) {
-  const views = parseFloat(row.avg_views) || 1;
-  const likes = parseFloat(row.avg_likes) || 0;
-  const comments = parseFloat(row.avg_comments) || 0;
-  const favorites = parseFloat(row.avg_favorites) || 0;
-  const shares = parseFloat(row.avg_shares) || 0;
-  const followers = parseFloat(row.followers) || 1;
-  const totalLikes = parseFloat(row.total_likes) || 0;
-
-  const engScore = ((likes * 1) + (comments * 3) + (favorites * 2) + (shares * 5)) / views * 100;
-  const ltfRatio = (totalLikes / followers);
-  const ltfMax = Math.max(...allData.map(d => (parseFloat(d.total_likes)||0) / (parseFloat(d.followers)||1)));
-  const ltfNorm = ltfMax > 0 ? (ltfRatio / ltfMax) * 100 : 0;
-
-  return Math.round(engScore * 0.6 + ltfNorm * 0.4);
-}
-
-function getLeague(followers) {
-  const f = parseFloat(followers);
-  if (f >= 80000) return { label: 'Yama', cls: 'yama', desc: 'Top-tier creator' };
-  if (f >= 40000) return { label: 'Dao', cls: 'dao', desc: 'Established creator' };
-  return { label: 'Jatu', cls: 'jatu', desc: 'Rising creator' };
-}
-
-function fmtNum(n) {
-  const num = parseFloat(n) || 0;
-  if (num >= 1000000) return (num/1000000).toFixed(1) + 'M';
-  if (num >= 1000) return (num/1000).toFixed(1) + 'K';
-  return num.toString();
-}
-
-function getInitials(name) {
-  return (name || '?').charAt(0).toUpperCase();
-}
-
-function setCat(cat) {
-  activeCat = cat;
-  document.querySelectorAll('[data-cat]').forEach(b => {
-    b.classList.toggle('active', b.dataset.cat === cat);
-  });
-  renderGrid();
-}
-
-function setPeriod(p) {
-  activePeriod = p;
-  document.querySelectorAll('[data-period]').forEach(b => {
-    if (!b.classList.contains('pro-lock')) {
-      b.classList.toggle('active', parseInt(b.dataset.period) === p);
-    }
-  });
-  renderGrid();
-}
-
-function requirePro(e, period) {
-  if (!isPro) { openProModal(); return; }
-  document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  setPeriod(period);
-}
-
-function renderGrid() {
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  const sortBy = document.getElementById('sortSelect').value;
-
-  let filtered = allData.filter(d => {
-    // ปลดล็อกตัวกรองผู้ติดตามออกเพื่อให้ทำงานได้ทุกสถานการณ์ข้อมูล
-    if (activeCat !== 'all' && (d.category || d.Category) !== activeCat) return false;
-    if (search) {
-      const name = (d.channel_name || '').toLowerCase();
-      const user = (d.channel_username || '').toLowerCase();
-      if (!name.includes(search) && !user.includes(search)) return false;
-    }
-    return true;
-  });
-
-  filtered.forEach(d => { d._score = calcQuality(d); });
-
-  filtered.sort((a, b) => {
-    if (sortBy === 'quality') return b._score - a._score;
-    if (sortBy === 'followers') return parseFloat(b.followers) - parseFloat(a.followers);
-    if (sortBy === 'total_likes') return parseFloat(b.total_likes) - parseFloat(a.total_likes);
-    return 0;
-  });
-
-  document.getElementById('resultsCount').textContent = `Showing ${filtered.length} creators`;
-
-  if (filtered.length === 0) {
-    document.getElementById('gridContainer').innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div>No creators found matching your filters.</div></div>`;
-    return;
-  }
-
-  const html = filtered.map((d, i) => {
-    const league = getLeague(d.followers);
-    const score = d._score;
-    const hasImg = d.profile_img_url && d.profile_img_url.startsWith('http');
-    const avatarHtml = hasImg
-      ? `<img src="${d.profile_img_url}" alt="${d.channel_name}">`
-      : getInitials(d.channel_name);
-
-    return `
-    <div class="card" onclick="openCreator('${d.channel_username}')">
-      <div class="rank-badge">#${i+1}</div>
-      <div class="card-top">
-        <div class="avatar">${avatarHtml}</div>
-        <div class="card-info">
-          <div class="card-name">${d.channel_name || d.channel_username}</div>
-          <div class="card-handle">@${d.channel_username}</div>
-          <div class="card-badges">
-            <span class="badge-league ${league.cls}" title="${league.desc}">${league.label}</span>
-            <span class="badge-cat">${d.category || d.Category || ''}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-stats">
-        <div class="stat-box">
-          <div class="stat-box-label">Followers</div>
-          <div class="stat-box-val">${fmtNum(d.followers)}</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-label">Total Likes</div>
-          <div class="stat-box-val">${fmtNum(d.total_likes)}</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-label">Avg Views</div>
-          <div class="stat-box-val">${fmtNum(d.avg_views)}</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-label">Avg Shares</div>
-          <div class="stat-box-val">${fmtNum(d.avg_shares)}</div>
-        </div>
-      </div>
-
-      <div class="quality-row">
-        <div class="quality-label">
-          Quality Score
-          <div class="quality-info">i
-            <div class="quality-tooltip">
-              Calculated from:<br>
-              • Engagement rate per clip (Likes×1 + Comments×3 + Favorites×2 + Shares×5) ÷ Views = 60%<br>
-              • Like-to-Follower ratio = 40%
-            </div>
-          </div>
-        </div>
-        <div class="quality-score">${score}</div>
-      </div>
-
-      <div class="growth-section">
-        ${isPro
-          ? `<div style="font-size:11px;color:var(--light);">Growth chart available in PRO</div>`
-          : `<div class="growth-pro-lock" onclick="openProModal()">🔒 View Growth chart (PRO)</div>`
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAKAR — Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        
+        /* Tier Styling */
+        .tier-leading { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .tier-growing { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .tier-rising { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        
+        .score-display { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .metric-pill { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* Tooltip Customization */
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 240px; background-color: #1e293b; color: #fff; text-align: center;
+            border-radius: 12px; padding: 12px; position: absolute; z-index: 100; bottom: 125%; left: 50%;
+            margin-left: -120px; opacity: 0; transition: opacity 0.3s; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            font-size: 11px; line-height: 1.5; font-weight: 400;
         }
-      </div>
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+    </style>
+</head>
+<body class="min-h-screen custom-scrollbar pb-12">
 
-      <a class="tt-link" href="https://www.tiktok.com/@${d.channel_username}" target="_blank" onclick="event.stopPropagation()">
-        ↗ View on TikTok
-      </a>
-    </div>`;
-  }).join('');
+    <header class="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-chart-simple text-white text-sm"></i>
+                </div>
+                <span class="text-lg font-bold tracking-tight text-white italic">MAKAR</span>
+            </div>
+            <div id="lastUpdated" class="text-xs text-gray-400 bg-gray-800/60 px-3 py-1.5 rounded-lg border border-gray-700/50">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block mr-2"></span> Syncing Data...
+            </div>
+        </div>
+    </header>
 
-  document.getElementById('gridContainer').innerHTML = `<div class="grid">${html}</div>`;
-}
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="glass-card rounded-2xl p-5 flex items-center space-x-4">
+                <div class="p-3.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20"><i class="fa-solid fa-users text-xl"></i></div>
+                <div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Creators</p><p id="totalCreators" class="text-2xl font-bold text-white">-</p></div>
+            </div>
+            <div class="glass-card rounded-2xl p-5 flex items-center space-x-4">
+                <div class="p-3.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20"><i class="fa-solid fa-tags text-xl"></i></div>
+                <div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Categories</p><p id="totalCategories" class="text-2xl font-bold text-white">-</p></div>
+            </div>
+            <div class="glass-card rounded-2xl p-5 flex items-center space-x-4">
+                <div class="p-3.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><i class="fa-solid fa-chart-area text-xl"></i></div>
+                <div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Followers</p><p id="totalFollowers" class="text-2xl font-bold text-white">-</p></div>
+            </div>
+            <div class="glass-card rounded-2xl p-5 flex items-center space-x-4">
+                <div class="p-3.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20"><i class="fa-solid fa-star text-xl"></i></div>
+                <div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Avg Quality</p><p id="avgQuality" class="text-2xl font-bold text-white">-</p></div>
+            </div>
+        </section>
 
-function buildCategoryFilters(categories) {
-  const container = document.getElementById('categoryFilters');
-  container.innerHTML = `<span class="filter-label">Category</span><button class="filter-btn active" data-cat="all" onclick="setCat('all')">All</button>`;
-  categories.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn';
-    btn.dataset.cat = cat;
-    btn.textContent = cat;
-    btn.onclick = () => setCat(cat);
-    container.appendChild(btn);
-  });
-}
+        <section class="glass-card rounded-2xl p-6 mb-8">
+            <div class="flex flex-col md:flex-row gap-6 items-end">
+                <div class="flex-1 w-full">
+                    <p class="text-[10px] font-bold uppercase text-gray-500 mb-2 tracking-widest">Search</p>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-gray-500 text-sm"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name or username..." class="w-full pl-11 pr-4 py-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm focus:border-blue-500 outline-none text-white">
+                    </div>
+                </div>
+                <div class="w-full md:w-auto">
+                    <p class="text-[10px] font-bold uppercase text-gray-500 mb-2 tracking-widest">Tier</p>
+                    <div class="flex bg-gray-900 p-1 rounded-xl border border-gray-700">
+                        <button class="tier-btn px-4 py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white" data-tier="all">ALL</button>
+                        <button class="tier-btn px-4 py-1.5 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white" data-tier="Leading">LEADING</button>
+                        <button class="tier-btn px-4 py-1.5 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white" data-tier="Growing">GROWING</button>
+                        <button class="tier-btn px-4 py-1.5 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white" data-tier="Rising">RISING</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-800">
+                <div id="categoryFilters" class="flex flex-wrap gap-2">
+                    <button class="cat-btn px-4 py-1.5 rounded-xl text-[11px] font-bold transition bg-blue-600/10 border border-blue-500/30 text-blue-400" data-cat="all">ALL CATEGORIES</button>
+                </div>
+            </div>
+        </section>
 
-function openCreator(username) {
-  window.open(`https://www.tiktok.com/@${username}`, '_blank');
-}
+        <div id="creatorsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        
+        <div id="emptyState" class="hidden text-center py-24 glass-card rounded-3xl border-dashed border-2 border-gray-800">
+            <i class="fa-solid fa-face-frown text-4xl text-gray-600 mb-4"></i>
+            <p class="text-gray-400">No creators matching your filters.</p>
+        </div>
 
-function openProModal() {
-  document.getElementById('proModal').classList.add('open');
-  document.getElementById('modalError').style.display = 'none';
-  document.getElementById('companyInput').value = '';
-  document.getElementById('passwordInput').value = '';
-}
+    </main>
 
-function closeProModal() {
-  document.getElementById('proModal').classList.remove('open');
-}
+    <script>
+        const SHEET_ID = '1cWgB4yd29n_xuMMU3Y43cu5DrDZLtQ3Hff2l-GecusI';
+        const CREATORS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=creators`;
+        const WEEKLY_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=weekly`;
 
-async function submitPro() {
-  const company = document.getElementById('companyInput').value.trim().toLowerCase();
-  const password = document.getElementById('passwordInput').value.trim();
+        let allData = [];
+        let activeTier = "all";
+        let activeCat = "all";
+        let query = "";
 
-  try {
-    const rows = await fetchSheet(PRO_USERS_URL);
-    const today = new Date().toISOString().split('T')[0];
+        // CSV Parser
+        function parseCSV(text) {
+            const rows = text.split('\n').filter(r => r.trim());
+            const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim());
+            return rows.slice(1).map(row => {
+                const values = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/"/g, '').trim());
+                let obj = {};
+                headers.forEach((h, i) => obj[h] = values[i]);
+                return obj;
+            });
+        }
 
-    const match = rows.find(r => {
-      const nameMatch = (r.company_name || '').toLowerCase() === company;
-      const passMatch = (r.password || '') === password;
-      const notExpired = !r.expired || r.expired >= today;
-      const active = (r.status || '').toLowerCase() === 'active';
-      return nameMatch && passMatch && notExpired && active;
-    });
+        // Initialize App & Load Google Sheets Data
+        async function init() {
+            try {
+                const [cRes, wRes] = await Promise.all([fetch(CREATORS_CSV), fetch(WEEKLY_CSV)]);
+                const cText = await cRes.text();
+                const wText = await wRes.text();
+                
+                const creators = parseCSV(cText);
+                const weekly = parseCSV(wText);
 
-    if (match) {
-      isPro = true;
-      closeProModal();
-      document.getElementById('proBadge').style.display = 'inline-block';
-      document.getElementById('proBtn').style.display = 'none';
-      document.querySelectorAll('.pro-lock').forEach(b => {
-        b.classList.remove('pro-lock');
-      });
-      renderGrid();
-    } else {
-      document.getElementById('modalError').style.display = 'block';
-    }
-  } catch(e) {
-    document.getElementById('modalError').style.display = 'block';
-  }
-}
+                const weeklyMap = {};
+                weekly.forEach(w => {
+                    const uname = (w.channel_username || w.Channel_username || "").trim().toLowerCase();
+                    if(uname) weeklyMap[uname] = w;
+                });
 
-async function init() {
-  try {
-    const [creators, weekly] = await Promise.all([
-      fetchSheet(CREATORS_URL),
-      fetchSheet(WEEKLY_URL)
-    ]);
+                allData = creators.map(c => {
+                    const uname = (c.channel_username || "").trim().toLowerCase();
+                    const w = weeklyMap[uname] || {};
+                    
+                    // Group Mapping Logic: Jatum -> Rising, Dao -> Growing, Yama -> Leading
+                    let group = c.group || w.group || w.Group || "Rising";
+                    if(group.toLowerCase() === 'jatum') group = 'Rising';
+                    if(group.toLowerCase() === 'dao') group = 'Growing';
+                    if(group.toLowerCase() === 'yama') group = 'Leading';
 
-    const weeklyMap = {};
-    weekly.forEach(w => { weeklyMap[w.channel_username] = w; });
+                    return {
+                        ...c, ...w,
+                        name: c.channel_name || w.channel_name || w.Channel_name || "undefined",
+                        handle: uname,
+                        cat: c.category || w.category || w.Category || "General",
+                        group: group,
+                        followers: parseInt(w.Followers || w.followers) || 0,
+                        likes: parseInt(w.Total_likes || w.total_likes) || 0,
+                        views: parseInt(w.Avg_views || w.avg_views) || 0,
+                        shares: parseInt(w.Avg_shares || w.avg_shares) || 0,
+                        score: parseFloat(w.Quality_score || w.quality_score) || 0
+                    };
+                });
 
-    allData = creators.map(c => ({
-      ...c,
-      ...(weeklyMap[c.channel_username] || {})
-    }));
+                // Generate Category Filters Dynamically
+                const cats = [...new Set(allData.map(d => d.cat).filter(Boolean))].sort();
+                const catContainer = document.getElementById('categoryFilters');
+                cats.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = "cat-btn px-4 py-1.5 rounded-xl text-[11px] font-bold transition bg-gray-900 border border-gray-800 text-gray-500 hover:text-white";
+                    btn.dataset.cat = cat;
+                    btn.textContent = cat.toUpperCase();
+                    catContainer.appendChild(btn);
+                });
 
-    // ดักจับหมวดหมู่ให้รองรับทั้งพิมพ์เล็กพิมพ์ใหญ่แบบปลอดภัย
-    const categories = [...new Set(allData.map(d => d.category || d.Category).filter(Boolean))].sort();
-    buildCategoryFilters(categories);
+                // Set Upper Dashboard Overview Metrics
+                document.getElementById('totalCreators').textContent = allData.length;
+                document.getElementById('totalFollowers').textContent = (allData.reduce((a,b)=>a+b.followers,0)/1000).toFixed(1) + 'K';
+                document.getElementById('avgQuality').textContent = (allData.reduce((a,b)=>a+b.score,0)/allData.length).toFixed(1);
+                
+                // Event Handling Configuration
+                document.querySelectorAll('.cat-btn').forEach(b => b.onclick = (e) => {
+                    document.querySelectorAll('.cat-btn').forEach(x => x.className = "cat-btn px-4 py-1.5 rounded-xl text-[11px] font-bold transition bg-gray-900 border border-gray-800 text-gray-500");
+                    e.target.className = "cat-btn px-4 py-1.5 rounded-xl text-[11px] font-bold transition bg-blue-600/10 border border-blue-500/30 text-blue-400";
+                    activeCat = e.target.dataset.cat; render();
+                });
 
-    document.getElementById('totalCreators').textContent = allData.length;
-    document.getElementById('totalCategories').textContent = categories.length;
+                document.querySelectorAll('.tier-btn').forEach(b => b.onclick = (e) => {
+                    document.querySelectorAll('.tier-btn').forEach(x => x.className = "tier-btn px-4 py-1.5 rounded-lg text-xs font-bold transition text-gray-400");
+                    e.target.className = "tier-btn px-4 py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white";
+                    activeTier = e.target.dataset.tier; render();
+                });
 
-    renderGrid();
-  } catch(e) {
-    document.getElementById('gridContainer').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div>Unable to load data. Please make sure your GSheet is published to the web.</div></div>`;
-  }
-}
+                document.getElementById('searchInput').oninput = (e) => { query = e.target.value.toLowerCase(); render(); };
 
-init();
-</script>
+                document.getElementById('lastUpdated').innerHTML = `<span class="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block mr-2"></span> Data Live`;
+                render();
+            } catch (e) { console.error(e); }
+        }
+
+        function formatNum(n) {
+            if(n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+            if(n >= 1000) return (n/1000).toFixed(1) + 'K';
+            return n;
+        }
+
+        // Render Cards to Grid
+        function render() {
+            const grid = document.getElementById('creatorsGrid');
+            const filtered = allData.filter(d => {
+                const mt = activeTier === "all" || d.group === activeTier;
+                const mc = activeCat === "all" || d.cat === activeCat;
+                const ms = d.name.toLowerCase().includes(query) || d.handle.toLowerCase().includes(query);
+                return mt && mc && ms;
+            });
+
+            if(filtered.length === 0) { grid.innerHTML = ""; document.getElementById('emptyState').classList.remove('hidden'); return; }
+            document.getElementById('emptyState').classList.add('hidden');
+
+            grid.innerHTML = filtered.map(d => `
+                <div class="glass-card rounded-3xl p-6 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="tier-badge ${'tier-' + d.group.toLowerCase()}">${d.group}</span>
+                            
+                            <div class="score-display rounded-2xl px-4 py-2 flex items-center gap-2 border-emerald-500/20">
+                                <div class="text-right">
+                                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest leading-none">Quality Score</p>
+                                    <p class="text-xl font-black text-white leading-none mt-1">${d.score.toFixed(1)}</p>
+                                </div>
+                                <div class="tooltip relative">
+                                    <i class="fa-solid fa-circle-info text-blue-400/80 text-xs cursor-help"></i>
+                                    <span class="tooltiptext">คือคะแนนเฉลี่ยที่นำข้อมูลจาก user engagement อาทิ Like, Comment, Favorite, Share, Views และ Followers มาคำนวณเพื่อสรุปเป็นตัวเลขหนึ่ง ที่สะท้อนภาพรวมเชิงคุณภาพของครีเอเตอร์</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="h-14 w-14 rounded-2xl bg-gray-800 flex items-center justify-center text-xl font-bold text-gray-500 border border-gray-700 shadow-inner">
+                                ${d.name.substring(0,1)}
+                            </div>
+                            <div class="overflow-hidden">
+                                <h3 class="text-white font-bold text-lg truncate leading-tight">${d.name}</h3>
+                                <p class="text-gray-500 text-xs mt-1">@${d.handle}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 mb-6">
+                            <span class="bg-gray-900 border border-gray-800 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-tighter">${d.cat}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="metric-pill rounded-2xl p-3">
+                                <p class="text-[9px] font-bold text-gray-500 uppercase">Followers</p>
+                                <p class="text-sm font-bold text-white mt-1">${formatNum(d.followers)}</p>
+                            </div>
+                            <div class="metric-pill rounded-2xl p-3">
+                                <p class="text-[9px] font-bold text-gray-500 uppercase">Total Likes</p>
+                                <p class="text-sm font-bold text-white mt-1">${formatNum(d.likes)}</p>
+                            </div>
+                            <div class="metric-pill rounded-2xl p-3">
+                                <p class="text-[9px] font-bold text-gray-500 uppercase">Avg Views</p>
+                                <p class="text-sm font-bold text-white mt-1">${formatNum(d.views)}</p>
+                            </div>
+                            <div class="metric-pill rounded-2xl p-3">
+                                <p class="text-[9px] font-bold text-gray-500 uppercase">Avg Shares</p>
+                                <p class="text-sm font-bold text-white mt-1">${formatNum(d.shares)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-800">
+                        <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-white/5 hover:bg-white/10 rounded-2xl text-xs font-bold text-gray-300 transition border border-white/5">
+                            <i class="fa-brands fa-tiktok"></i> View in TikTok
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        init();
+    </script>
 </body>
 </html>
