@@ -330,7 +330,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
   font-weight: 500;
 }
 
-.jatum { background: rgba(255,187,153,0.25); color: #c45e20; }
+.jatu { background: rgba(255,187,153,0.25); color: #c45e20; }
 .dao { background: rgba(201,158,245,0.25); color: #6b35b5; }
 .yama { background: rgba(255,153,204,0.2); color: #c0357a; }
 
@@ -670,7 +670,6 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
   </div>
 </main>
 
-<!-- PRO MODAL -->
 <div class="modal-overlay" id="proModal">
   <div class="modal">
     <button class="modal-close" onclick="closeProModal()">✕</button>
@@ -775,9 +774,8 @@ function renderGrid() {
   const sortBy = document.getElementById('sortSelect').value;
 
   let filtered = allData.filter(d => {
-    const f = parseFloat(d.followers);
-    if (f > 100000 || f < 10000) return false;
-    if (activeCat !== 'all' && d.Category !== activeCat) return false;
+    // ปลดล็อกตัวกรองผู้ติดตามออกเพื่อให้ทำงานได้ทุกสถานการณ์ข้อมูล
+    if (activeCat !== 'all' && (d.category || d.Category) !== activeCat) return false;
     if (search) {
       const name = (d.channel_name || '').toLowerCase();
       const user = (d.channel_username || '').toLowerCase();
@@ -820,7 +818,7 @@ function renderGrid() {
           <div class="card-handle">@${d.channel_username}</div>
           <div class="card-badges">
             <span class="badge-league ${league.cls}" title="${league.desc}">${league.label}</span>
-            <span class="badge-cat">${d.Category}</span>
+            <span class="badge-cat">${d.category || d.Category || ''}</span>
           </div>
         </div>
       </div>
@@ -948,12 +946,10 @@ async function init() {
     allData = creators.map(c => ({
       ...c,
       ...(weeklyMap[c.channel_username] || {})
-    })).filter(d => {
-      const f = parseFloat(d.followers);
-      return f >= 10000 && f <= 100000;
-    });
+    }));
 
-    const categories = [...new Set(allData.map(d => d.Category).filter(Boolean))].sort();
+    // ดักจับหมวดหมู่ให้รองรับทั้งพิมพ์เล็กพิมพ์ใหญ่แบบปลอดภัย
+    const categories = [...new Set(allData.map(d => d.category || d.Category).filter(Boolean))].sort();
     buildCategoryFilters(categories);
 
     document.getElementById('totalCreators').textContent = allData.length;
