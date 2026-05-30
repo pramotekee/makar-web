@@ -203,9 +203,9 @@
         let searchQuery = "";
         let sortBy = "score";
 
-        const CREATORS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=creators`;
-        const WEEKLY_CSV   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=weekly`;
-        const PRO_USERS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=pro_users`;
+        const CREATORS_CSV  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=creators`;
+        const WEEKLY_CSV    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=weekly`;
+        const PRO_USERS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=pro_users`;
 
         function parseCSV(text) {
             const rows = text.split('\n').filter(r => r.trim());
