@@ -431,7 +431,7 @@
 
             let filtered = allData.filter(d => {
                 const mc = activeCats.includes("all") || activeCats.includes(d.cat);
-                const mt = activeTiers.includes("all") || activeTiers.includes(d.group.toLowerCase());
+                const mt = activeTiers.includes("all") || activeTiers.includes((d.group || "").toLowerCase());
                 const ms = d.name.toLowerCase().includes(searchQuery) || d.handle.toLowerCase().includes(searchQuery);
 
                 const favs = parseInt(d.avg_favorites) || 0;
