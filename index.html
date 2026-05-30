@@ -304,7 +304,9 @@
 
             try {
                 const [cRes, wRes, pRes] = await Promise.all([
-                    fetch(CREATORS_CSV), fetch(WEEKLY_CSV), fetch(PRO_USERS_CSV)
+                        fetch(CREATORS_CSV, {mode:'cors'}), 
+                        fetch(WEEKLY_CSV, {mode:'cors'}), 
+                        fetch(PRO_USERS_CSV, {mode:'cors'})
                 ]);
 
                 const creators = parseCSV(await cRes.text());
