@@ -3,296 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAKAR - We don't track the famous. We track the ones audiences actually listen to.</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>MAKAR – Creator Tracking Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        root {
+        :root {
             --logo-color: #000000;
             --hero-bg: #FF9300;
-            --hero-text: rgba(255,255,255,0.8);
+            --hero-text: rgba(255, 255, 255, 0.9);
             --primary: #000000;
             --pro-btn-bg: #0A1A4A;
-            --pink: #FF99CC;
-            --peach: #FFBB99;
-            --lavender: #C99EF5;
-            --offwhite: #F5F5F0;
-            --mid: #444444;
+            --tier-rise: #FF9300;
+            --tier-growth: #10B981;
+            --tier-lead: #2563EB;
+            --bg-gray: #F5F5F0;
+            --card-bg: #FFFFFF;
+            --text-muted: #6B7280;
+            --border-color: #E5E7EB;
         }
-        body {
-            font-family: 'DM Sans', 'Noto Sans Thai', sans-serif;
-            background-color: #F5F5F0;
-            color: #000000;
-        }
-        .hero-banner { background-color: #FF9300; }
-        .glass-card { background: #FFFFFF; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
-        .tier-badge { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-        .tier-jatu { background-color: #FFE6D5; color: #FF6600; }
-        .tier-dao { background-color: #E8D8F8; color: #8A2BE2; }
-        .tier-yama { background-color: #FFE0E6; color: #FF3366; }
-        .metric-box { background-color: #F9F9F6; border-radius: 16px; padding: 12px; }
-        .tooltip { position: relative; display: inline-block; }
-        .tooltip .tooltiptext {
-            visibility: hidden; width: 280px; background-color: #111111; color: #fff;
-            text-align: left; border-radius: 12px; padding: 12px; position: absolute;
-            z-index: 50; bottom: 125%; left: 50%; transform: translateX(-50%);
-            opacity: 0; transition: opacity 0.2s; font-size: 12px; line-height: 1.6;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', 'Noto Sans Thai', sans-serif; }
+        body { background-color: var(--bg-gray); color: var(--primary); padding-bottom: 50px; }
+
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background: #fff; border-bottom: 1px solid var(--border-color); }
+        .logo { font-size: 1.5rem; font-weight: 700; font-style: italic; color: var(--logo-color); }
+        .btn-pro { background-color: var(--pro-btn-bg); color: #fff; padding: 0.5rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; }
+
+        .hero { background-color: var(--hero-bg); text-align: center; padding: 4rem 1rem; color: #fff; }
+        .hero h1 { font-size: 3.5rem; font-style: italic; font-weight: 700; margin-bottom: 1rem; color: #000; }
+        .hero p { color: var(--hero-text); font-size: 1.1rem; margin-bottom: 2rem; }
+        .stats-container { display: flex; justify-content: center; gap: 3rem; }
+        .stat-item h3 { font-size: 2.5rem; font-weight: 700; color: #000; }
+        .stat-item p { font-size: 0.85rem; opacity: 0.8; margin-top: 0.2rem; }
+
+        .main-container { max-width: 1400px; margin: -2rem auto 3rem auto; padding: 0 2rem; }
+        .filter-card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .search-box { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; background: #F3F4F6; font-size: 1rem; margin-bottom: 1.5rem; outline: none; }
+
+        .filter-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
+        .filter-group { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-label { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-right: 0.5rem; }
+
+        .btn-filter { background: #E5E7EB; color: #000000; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 500; border: none; }
+        .btn-filter.active { background: #000000; color: #ffffff; font-weight: 700; }
+
+        .btn-tier { background: #E5E7EB; color: #374151; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; border: none; }
+        .btn-tier.active[data-tier="all"] { background: #000000; color: #fff; }
+        .btn-tier.active[data-tier="rise"] { background-color: var(--tier-rise); color: #fff; }
+        .btn-tier.active[data-tier="growth"] { background-color: var(--tier-growth); color: #fff; }
+        .btn-tier.active[data-tier="lead"] { background-color: var(--tier-lead); color: #fff; }
+
+        .sort-row { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
+        .select-sort { background: #fff; border: 1px solid var(--border-color); padding: 0.4rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; outline: none; }
+
+        .btn-period { background: #E5E7EB; color: #374151; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; border: none; cursor: pointer; margin-left: 0.3rem; }
+        .btn-period.active { background: #000000; color: #ffffff; }
+        .btn-period.lock { background: #F3F4F6; color: #9CA3AF; border: 1px dashed var(--border-color); }
+
+        .creator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+
+        .creator-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 1.5rem; position: relative; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); }
+        .ranking-badge { position: absolute; top: 20px; right: 24px; font-size: 38px; font-weight: 900; color: #000000; opacity: 0.9; }
+        .card-header { display: flex; gap: 1rem; align-items: center; padding-right: 75px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #FF9300 0%, #FF5722 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1.2rem; }
+        .badge-row { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
+        .badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700; }
+        .badge-cat { background: #E5E7EB; color: #000; }
+        .badge-rise { background-color: var(--tier-rise); color: #fff; }
+        .badge-growth { background-color: var(--tier-growth); color: #fff; }
+        .badge-lead { background-color: var(--tier-lead); color: #fff; }
+
+        .score-box { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #F5E6C4 0%, #DFB76C 100%); padding: 12px 16px; border-radius: 8px; border: 1px solid #D4AF37; }
+        .score-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 700; color: #000; position: relative; }
+        .info-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1.2px solid #000; border-radius: 50%; font-size: 0.7rem; font-weight: bold; }
+        .tooltiptext { visibility: hidden; opacity: 0; transition: opacity 0.3s; width: 260px; background-color: #111111; color: #ffffff; border-radius: 8px; padding: 0.8rem; position: absolute; z-index: 9999; bottom: 130%; left: 0; font-weight: 400; font-size: 0.8rem; line-height: 1.4; }
+        .tooltiptext.show { visibility: visible !important; opacity: 1 !important; }
+        .qs-val { font-size: 1.2rem; font-weight: 900; }
+
+        .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .metric-item { background: #F9FAFB; border: 1px solid #F3F4F6; padding: 0.8rem; border-radius: 8px; }
+        .metric-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+        .metric-value { font-size: 20px; font-weight: 700; color: #000; }
+
+        .footer-note { font-size: 0.8rem; color: #78350F; text-align: center; background: #FFFBEB; padding: 0.4rem; border-radius: 6px; font-weight: 400; }
+        .divider { border: none; border-top: 1px dashed var(--border-color); margin: 0.2rem 0; }
+        .timestamp { font-size: 0.8rem; color: var(--text-muted); }
+        .btn-card-pro { width: 100%; padding: 0.7rem; background: #F3E8FF; color: #6B21A8; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; }
+        .tiktok-cta { color: #4B5563; text-decoration: none; font-size: 0.85rem; font-weight: 500; margin-top: 0.5rem; display: inline-block; }
+        .tiktok-cta:hover { color: #000; text-decoration: underline; }
+
+        .pro-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
+        .pro-modal-overlay.active { display: flex; }
+        .pro-modal-card { background: #FFFFFF; padding: 35px 30px; border-radius: 20px; max-width: 400px; width: 90%; text-align: center; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; background: none; border: none; color: #9CA3AF; cursor: pointer; }
+        .modal-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 1rem; }
+        .btn-submit-pro { width: 100%; padding: 0.8rem; background: #0A1A4A; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .error-message { color: #DC2626; font-weight: 700; font-size: 0.85rem; margin-bottom: 10px; display: none; text-align: left; }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body>
 
-    <header class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-2xl font-black tracking-tight italic text-black">MAKAR</span>
-            <button class="bg-[#0A1A4A] text-white px-5 py-2 rounded-xl text-xs font-bold tracking-wide">Access PRO</button>
+    <nav class="navbar">
+        <div class="logo">MAKAR</div>
+        <button class="btn-pro" id="triggerProNav">Access PRO</button>
+    </nav>
+
+    <header class="hero">
+        <h1>MAKAR</h1>
+        <p>We don't track the famous. We track the ones audiences actually listen to.</p>
+        <div class="stats-container">
+            <div class="stat-item">
+                <h3 id="totalCreators">0</h3>
+                <p>creators</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="totalCategories">0</h3>
+                <p>categories</p>
+            </div>
+            <div class="stat-item">
+                <h3>10K–100K</h3>
+                <p>follower range</p>
+            </div>
         </div>
     </header>
 
-    <section class="hero-banner text-center py-16 px-4">
-        <h1 class="text-5xl font-black tracking-tighter text-black italic mb-3">MAKAR</h1>
-        <p class="text-white/80 text-sm font-medium max-w-xl mx-auto mb-8">We don't track the famous. We track the ones audiences actually listen to.</p>
-        
-        <div class="flex justify-center items-center gap-12 max-w-md mx-auto">
-            <div>
-                <p id="totalCreators" class="text-2xl font-black text-black">-</p>
-                <p class="text-xs text-white/70 font-medium mt-1">creators</p>
-            </div>
-            <div>
-                <p id="totalCategories" class="text-2xl font-black text-black">-</p>
-                <p class="text-xs text-white/70 font-medium mt-1">categories</p>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-black">10K–100K</p>
-                <p class="text-xs text-white/70 font-medium mt-1">follower range</p>
-            </div>
-        </div>
-    </section>
-
-    <main class="max-w-7xl mx-auto px-4 mt-8">
-        
-        <section class="glass-card p-6 mb-8">
-            <div class="relative mb-6">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
-                <input type="text" id="searchInput" placeholder="Search by name or username..." class="w-full pl-12 pr-4 py-3 bg-[#F5F5F0] rounded-xl text-sm border-none outline-none text-black">
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2 text-sm border-b border-gray-100 pb-4 mb-4">
-                <span class="text-gray-400 mr-2">Category</span>
-                <div id="categoryFilters" class="flex flex-wrap gap-2">
-                    <button class="cat-btn px-4 py-1.5 rounded-full text-xs font-bold transition bg-black text-white" data-cat="all">All</button>
+    <main class="main-container">
+        <div class="filter-card">
+            <input type="text" class="search-box" placeholder="Search by name or username..." id="searchInput">
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <span class="filter-label">Category</span>
+                    <button class="btn-filter btn-category active" data-cat="all">All</button>
+                    <button class="btn-filter btn-category" data-cat="Beauty">Beauty</button>
+                    <button class="btn-filter btn-category" data-cat="Food">Food</button>
+                    <button class="btn-filter btn-category" data-cat="Finance">Finance</button>
+                    <button class="btn-filter btn-category" data-cat="Career">Career</button>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Tier</span>
+                    <button class="btn-tier active" data-tier="all">All</button>
+                    <button class="btn-tier" data-tier="rise">Rise 10K–39K</button>
+                    <button class="btn-tier" data-tier="growth">Growth 40K–79K</button>
+                    <button class="btn-tier" data-tier="lead">Lead 80K–100K</button>
                 </div>
             </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-4 text-xs">
-                <div class="flex items-center gap-2">
-                    <span class="text-gray-400">Sort by</span>
-                    <select id="sortSelect" class="bg-white border border-gray-200 px-3 py-2 rounded-xl font-medium outline-none">
-                        <option value="score">Quality Score</option>
+            <div class="sort-row">
+                <div>
+                    <span>Sort by:</span>
+                    <select id="sortSelect" class="select-sort">
+                        <option value="score">Trigger Score</option>
                         <option value="followers">Followers</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-gray-400">Growth period</span>
-                    <button class="px-4 py-2 bg-black text-white rounded-full font-bold">30 days</button>
-                    <button class="px-4 py-2 border border-purple-200 text-purple-500 rounded-full font-medium opacity-60 cursor-not-allowed"><i class="fa-solid fa-lock mr-1"></i> 60 days</button>
-                    <button class="px-4 py-2 border border-purple-200 text-purple-500 rounded-full font-medium opacity-60 cursor-not-allowed"><i class="fa-solid fa-lock mr-1"></i> 180 days</button>
-                    <button class="px-4 py-2 border border-purple-200 text-purple-500 rounded-full font-medium opacity-60 cursor-not-allowed"><i class="fa-solid fa-lock mr-1"></i> 365 days</button>
+                <div>
+                    <span>Engagement Rate</span>
+                    <span class="score-title" style="position:relative; display:inline-flex; align-items:center;">
+                        <span class="info-icon" style="cursor: pointer;">i</span>
+                        <span class="tooltiptext">Measures audience quality by weighting shares, comments, and favorites. Higher % means more meaningful interaction.</span>
+                    </span>
+                    <button class="btn-filter btn-er active" data-er="0">All</button>
+                    <button class="btn-filter btn-er active" data-er="0">⚠️ Low(<2%)</button>
+                    <button class="btn-filter btn-er active" data-er="2">✅ Good(2–6%)</button>
+                    <button class="btn-filter btn-er active" data-er="6">🔥 High(>6%)</button>
                 </div>
-            </div>
-        </section>
-
-        <div class="flex justify-between items-center mb-6 px-2">
-            <p id="showingCounter" class="text-xs text-gray-500 font-medium">Showing 0 creators</p>
-            <div class="flex gap-4 text-[10px] font-bold">
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#FFE6D5]"></span> Jatum 10K–39K</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#E8D8F8]"></span> Dao 40K–79K</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#FFE0E6]"></span> Yama 80K–100K</span>
             </div>
         </div>
 
-        <div id="creatorsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
+        <section class="creator-grid" id="creatorsGrid"></section>
     </main>
+
+    <div class="pro-modal-overlay" id="proModalOverlay">
+        <div class="pro-modal-card">
+            <button class="close-btn" onclick="closeProModal()">&times;</button>
+            <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;">Access PRO</h2>
+            <div id="loginErrorMessage" class="error-message"></div>
+            <div style="text-align: left;">
+                <input type="text" id="companyNameInput" placeholder="Company name" class="modal-input">
+                <input type="password" id="passwordInput" placeholder="Password" class="modal-input">
+            </div>
+            <button class="btn-submit-pro" onclick="validateProUser()">GO</button>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                <a href="https://linktr.ee/popzilar" target="_blank" style="color: #0A1A4A; font-weight: 700; text-decoration: underline;">Contact us</a> to access PRO
+            </p>
+        </div>
+    </div>
 
     <script>
         const SHEET_ID = '1cWgB4yd29n_xuMMU3Y43cu5DrDZLtQ3Hff2l-GecusI';
-        const CREATORS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=creators`;
-        const WEEKLY_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=weekly`;
 
+        let proUsersList = [];
         let allData = [];
-        let activeCat = "all";
+        let activeCats = ["all"];
+        let activeTiers = ["all"];
+        let activeER = 0;
         let searchQuery = "";
         let sortBy = "score";
 
+        const CREATORS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=creators`;
+        const WEEKLY_CSV   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=weekly`;
+        const PRO_USERS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=pro_users`;
+
         function parseCSV(text) {
             const rows = text.split('\n').filter(r => r.trim());
+            if (rows.length === 0) return [];
             const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim());
             return rows.slice(1).map(row => {
                 const values = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/"/g, '').trim());
                 let obj = {};
-                headers.forEach((h, i) => obj[h] = values[i]);
+                headers.forEach((h, i) => { if (values[i] !== undefined) obj[h] = values[i]; });
                 return obj;
             });
         }
 
+        function setupEvents() {
+            document.querySelectorAll('.btn-category').forEach(btn => {
+               btn.addEventListener('click', () => {
+                   const c = btn.dataset.cat;
+                   if (c === "all") {
+                       activeCats = ["all"];
+                       document.querySelectorAll('.btn-category').forEach(x => x.classList.remove('active'));
+                       btn.classList.add('active');
+                   } else {
+                       activeCats = activeCats.filter(x => x !== "all");
+                       const allBtn = document.querySelector('.btn-category[data-cat="all"]');
+                       if (allBtn) allBtn.classList.remove('active');
+                       if (activeCats.includes(c)) {
+                           activeCats = activeCats.filter(x => x !== c);
+                           btn.classList.remove('active');
+                           if (activeCats.length === 0) {
+                               activeCats = ["all"];
+                               if (allBtn) allBtn.classList.add('active');
+                           }
+                       } else {
+                           activeCats.push(c);
+                           btn.classList.add('active');
+                       }
+                    }
+                    render();
+                });
+            });
+
+            document.querySelectorAll('.btn-tier').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const t = btn.dataset.tier;
+                    if (t === "all") {
+                        activeTiers = ["all"];
+                        document.querySelectorAll('.btn-tier').forEach(x => x.classList.remove('active'));
+                        btn.classList.add('active');
+                    } else {
+                        activeTiers = activeTiers.filter(x => x !== "all");
+                        const allBtn = document.querySelector('.btn-tier[data-tier="all"]');
+                        if (allBtn) allBtn.classList.remove('active');
+
+                        if (activeTiers.includes(t)) {
+                            activeTiers = activeTiers.filter(x => x !== t);
+                            btn.classList.remove('active');
+                            if (activeTiers.length === 0) {
+                                activeTiers = ["all"];
+                                if (allBtn) allBtn.classList.add('active');
+                            }
+                        } else {
+                            activeTiers.push(t);
+                            btn.classList.add('active');
+                        }
+                    }
+                    render();
+                });
+            });
+
+            document.querySelectorAll('.btn-er').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    activeER = parseInt(btn.dataset.er);
+                    document.querySelectorAll('.btn-er').forEach(x => x.classList.remove('active'));
+                    btn.classList.add('active');
+                    render();
+                 });
+            }); 
+
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase().trim();
+                render();
+            });
+
+            document.getElementById('sortSelect').addEventListener('change', (e) => {
+                sortBy = e.target.value;
+                render();
+            });
+
+            document.getElementById('triggerProNav').onclick = openProModal;
+        }
+
         async function init() {
+            setupEvents(); // เรียกแค่ครั้งเดียว
+
+            render();
+
             try {
-                const [cRes, wRes] = await Promise.all([fetch(CREATORS_CSV), fetch(WEEKLY_CSV)]);
+                const [cRes, wRes, pRes] = await Promise.all([
+                    fetch(CREATORS_CSV), fetch(WEEKLY_CSV), fetch(PRO_USERS_CSV)
+                ]);
+
                 const creators = parseCSV(await cRes.text());
-                const weekly = parseCSV(await wRes.text());
+                const weekly   = parseCSV(await wRes.text());
+                proUsersList   = parseCSV(await pRes.text());
+
+                allData = creators;
+                document.getElementById('totalCreators').textContent   = allData.length;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
+                render();
 
                 const weeklyMap = {};
                 weekly.forEach(w => {
-                    const uname = (w.channel_username || w.Channel_username || "").trim().toLowerCase();
-                    if(uname) weeklyMap[uname] = w;
+                    const uname = (w.channel_username || "").trim().toLowerCase();
+                    if (!uname) return;
+
+                    const [d, m, y] = w.last_updated.split('/');
+                    const currentTimestamp = new Date(`${y}-${m}-${d}`).getTime();
+
+                    if (!weeklyMap[uname] || currentTimestamp > new Date(weeklyMap[uname].last_updated.split('/').reverse().join('-')).getTime()) {
+                        weeklyMap[uname] = w;
+                    }
                 });
 
-                allData = creators.map((c, index) => {
-                    const uname = (c.channel_username || "").trim().toLowerCase();
-                    const w = weeklyMap[uname] || {};
-                    
-                    let group = c.group || w.group || w.Group || "Jatum";
-                    
-                    return {
-                        rank: index + 1,
-                        name: c.channel_name || "undefined",
-                        handle: c.channel_username || "undefined",
-                        cat: c.category || "General",
-                        group: group,
-                        followers: parseInt(w.followers || w.Followers) || 0,
-                        likes: parseInt(w.total_likes || w.Total_likes) || 0,
-                        views: parseInt(w.avg_views || w.Avg_views) || 0,
-                        shares: parseInt(w.avg_shares || w.Avg_shares) || 0,
-                        score: parseFloat(w.Quality_score || w.quality_score) || 0
-                    };
-                });
+                if (creators.length > 0) {
+                    allData = creators.map((c, index) => {
+                        const uname = (c.channel_username || "").trim().toLowerCase();
+                        const w = weeklyMap[uname] || {};
 
-                // Generate categories
-                const cats = [...new Set(allData.map(d => d.cat).filter(Boolean))].sort();
-                const catContainer = document.getElementById('categoryFilters');
-                cats.forEach(cat => {
-                    const btn = document.createElement('button');
-                    btn.className = "cat-btn px-4 py-1.5 rounded-full text-xs font-medium transition bg-white border border-gray-200 text-gray-600 hover:bg-gray-50";
-                    btn.dataset.cat = cat;
-                    btn.textContent = cat;
-                    catContainer.appendChild(btn);
-                });
+                        let rawGroup = (c.group || w.group || "Rise").trim().toLowerCase();
+                        let mappedGroup = "Rise";
+                        if (rawGroup === "jatum" || rawGroup === "rise")     mappedGroup = "Rise";
+                        else if (rawGroup === "dao" || rawGroup === "growth") mappedGroup = "Growth";
+                        else if (rawGroup === "yama" || rawGroup === "lead") mappedGroup = "Lead";
 
-                document.getElementById('totalCreators').textContent = allData.length;
-                document.getElementById('totalCategories').textContent = cats.length;
+                        const favs = parseInt(w.avg_favorites) || 0;
+                        const comms = parseInt(w.avg_comments) || 0;
+                        const shares = parseInt(w.avg_shares) || 0;
+                        const followers = parseInt(w.followers) || 1;
+                        const er = (((favs * 2) + (comms * 3) + (shares * 4)) / followers) * 100 || 0;
 
-                // Event Listeners
-                document.querySelectorAll('.cat-btn').forEach(b => b.onclick = (e) => {
-                    document.querySelectorAll('.cat-btn').forEach(x => {
-                        x.className = "cat-btn px-4 py-1.5 rounded-full text-xs font-medium transition bg-white border border-gray-200 text-gray-600";
+                        return {
+                            rank:          index + 1,
+                            name:          c.channel_name     || "Undefined Name",
+                            handle:        c.channel_username || "username",
+                            cat:           c.category         || "General",
+                            group:         mappedGroup,
+                            er:            er,
+                            followers:     parseInt(w.followers)    || 0,
+                            total_likes:   parseInt(w.total_likes)  || 0,
+                            avg_views:     w.avg_views              || '-',
+                            avg_likes:     parseInt(w.avg_likes)    || 0,
+                            avg_comments:  w.avg_comments           || '-',
+                            avg_favorites: w.avg_favorites          || '-',
+                            shares:        parseInt(w.avg_shares)   || 0,
+                            trigger_score: parseFloat(w.trigger_score) || 0,
+                            last_update:   w.last_updated           || "N/A"
+                        };
                     });
-                    e.target.className = "cat-btn px-4 py-1.5 rounded-full text-xs font-bold transition bg-black text-white";
-                    activeCat = e.target.dataset.cat;
-                    render();
-                });
+                }
 
-                document.getElementById('searchInput').oninput = (e) => { searchQuery = e.target.value.toLowerCase(); render(); };
-                document.getElementById('sortSelect').onchange = (e) => { sortBy = e.target.value; render(); };
+                document.getElementById('totalCreators').textContent   = allData.length;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
+                render(); // ไม่มี setupEvents() แล้ว
 
-                render();
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error("Fetch failed, using active view cards.", e);
+                // ไม่มี setupEvents() แล้ว
+            }
+        }
+
+        function validateProUser() {
+            const compInput = document.getElementById('companyNameInput').value.trim().toLowerCase();
+            const passInput = document.getElementById('passwordInput').value.trim();
+            const errMsg    = document.getElementById('loginErrorMessage');
+            errMsg.style.display = 'none';
+
+            if (!compInput || !passInput) {
+                errMsg.textContent   = "Please fill in all fields.";
+                errMsg.style.display = 'block';
+                return;
+            }
+
+            const foundUser = proUsersList.find(u => {
+                const sCompany  = (u.company_name || "").trim().toLowerCase();
+                const sPassword = (u.password || "").trim();
+                return sCompany === compInput && sPassword === passInput;
+            });
+
+            if (!foundUser) {
+                errMsg.textContent   = "Invalid Company Name or Password.";
+                errMsg.style.display = 'block';
+                return;
+            }
+
+            const expiryStr = foundUser.expired_date || "";
+            const parts = expiryStr.split('/');
+            if (parts.length === 3) {
+                const expiryDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                const today = new Date();
+                if (today > expiryDate) {
+                    errMsg.textContent   = "Your account access has expired.";
+                    errMsg.style.display = 'block';
+                    return;
+                }
+            }
+            alert("Access Granted!");
+            closeProModal();
         }
 
         function formatNum(n) {
-            if(n >= 1000000) return (n/1000000).toFixed(1) + 'M';
-            if(n >= 1000) return (n/1000).toFixed(1) + 'K';
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
             return n;
         }
 
         function render() {
             const grid = document.getElementById('creatorsGrid');
-            
-            let filtered = allData.filter(d => {
-                const mc = activeCat === "all" || d.cat === activeCat;
-                const ms = d.name.toLowerCase().includes(searchQuery) || d.handle.toLowerCase().includes(searchQuery);
-                return mc && ms;
-            });
 
-            if (sortBy === "score") {
-                filtered.sort((a, b) => b.score - a.score);
-            } else if (sortBy === "followers") {
-                filtered.sort((a, b) => b.followers - a.followers);
+            if (allData.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; width:100%;">Creator not found</p>';
+                return;
             }
 
-            document.getElementById('showingCounter').textContent = `Showing ${filtered.length} creators`;
+            let filtered = allData.filter(d => {
+                const mc = activeCats.includes("all") || activeCats.includes(d.cat);
+                const mt = activeTiers.includes("all") || activeTiers.includes(d.group.toLowerCase());
+                const ms = d.name.toLowerCase().includes(searchQuery) || d.handle.toLowerCase().includes(searchQuery);
 
-            grid.innerHTML = filtered.map((d, i) => `
-                <div class="glass-card p-6 relative flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-3">
-                                <div class="h-12 w-12 rounded-full bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                                    ?
-                                </div>
-                                <div>
-                                    <h3 class="text-black font-bold text-base leading-tight">${d.name}</h3>
-                                    <p class="text-gray-400 text-xs mt-0.5">@${d.handle}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold text-gray-300">#${i + 1}</span>
-                        </div>
+                const favs = parseInt(d.avg_favorites) || 0;
+                const comms = parseInt(d.avg_comments) || 0;
+                const shares = parseInt(d.shares) || 0;
+                const followers = parseInt(d.followers) || 1;
 
-                        <div class="flex gap-2 mb-4">
-                            <span class="tier-badge tier-${d.group.toLowerCase()}">${d.group}</span>
-                        </div>
+                const er = (((favs * 2) + (comms * 3) + (shares * 4)) / followers) * 100 || 0;
+                const me = er >= activeER;
 
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="metric-box">
-                                <p class="text-[10px] text-gray-400 font-medium">Followers</p>
-                                <p class="text-sm font-bold text-black mt-0.5">${formatNum(d.followers)}</p>
-                            </div>
-                            <div class="metric-box">
-                                <p class="text-[10px] text-gray-400 font-medium">Total Likes</p>
-                                <p class="text-sm font-bold text-black mt-0.5">${formatNum(d.likes)}</p>
-                            </div>
-                            <div class="metric-box">
-                                <p class="text-[10px] text-gray-400 font-medium">Avg Views</p>
-                                <p class="text-sm font-bold text-black mt-0.5">${formatNum(d.views)}</p>
-                            </div>
-                            <div class="metric-box">
-                                <p class="text-[10px] text-gray-400 font-medium">Avg Shares</p>
-                                <p class="text-sm font-bold text-black mt-0.5">${formatNum(d.shares)}</p>
+                return mc && mt && ms && me;
+            });
+
+            if (sortBy === "score")     filtered.sort((a, b) => b.trigger_score - a.trigger_score);
+            else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
+
+            grid.innerHTML = filtered.map((d, i) => {
+                const er = (((parseInt(d.avg_favorites) || 0) * 2) + ((parseInt(d.avg_comments) || 0) * 3) + ((parseInt(d.shares) || 0) * 4)) / (parseInt(d.followers) || 1) * 100 || 0;
+
+                return `
+
+                <div class="creator-card">
+                    <div class="card-header">
+                        <div class="avatar">${d.name.charAt(0).toUpperCase()}</div>
+                        <div style="min-width: 0; flex: 1;">
+                            <h3 style="font-weight: 700; font-size: 1.1rem;">${d.name}</h3>
+                            <p>@${d.handle}</p>
+                            <div class="badge-row">
+                                <span class="badge badge-cat">${d.cat}</span>
+                                <span class="badge badge-${d.group.toLowerCase()}">${d.group}</span>
                             </div>
                         </div>
-
-                        <div class="flex justify-between items-center py-3 border-t border-b border-gray-100 mb-4">
-                            <div class="flex items-center gap-1.5 text-xs text-gray-400">
-                                <span>Quality Score</span>
-                                <div class="tooltip">
-                                    <i class="fa-solid fa-circle-info cursor-help text-gray-300"></i>
-                                    <span class="tooltiptext">
-                                        <strong>Calculated from:</strong><br>
-                                        • Engagement rate per clip (Likes×1 + Comments×3 + Favorites×2 + Shares×5) ÷ Views = 60%<br>
-                                        • Like-to-Follower ratio = 40%
-                                    </span>
-                                </div>
-                            </div>
-                            <span class="text-lg font-bold text-black">${d.score.toFixed(0)}</span>
-                        </div>
+                        <div class="ranking-badge">#${d.rank || (i + 1)}</div>
                     </div>
 
-                    <div class="space-y-2">
-                        <button class="w-full py-2.5 bg-purple-50 border border-purple-100 text-purple-600 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 opacity-60 cursor-not-allowed">
-                            <i class="fa-solid fa-lock text-[10px]"></i> View Growth chart (PRO)
-                        </button>
-                        <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-black transition py-1">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View on TikTok
-                        </a>
+                    <div class="score-box">
+                        <div class="score-title">
+                            Trigger Score <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip(this)">i</span>
+                            <span class="tooltiptext">Creator quality metric considering consistent views, true engagement rate, and growth velocity.</span>
+                        </div>
+                        <div class="qs-val">${(d.trigger_score?.toFixed(1) || "0.0")}/10</div>
+                    </div>
+
+                    <div class="score-box" style="margin-top: 8px;">
+                        <div class="score-title">
+                            Engagement Rate 
+                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">Measures audience quality by weighting shares, comments, and favorites. Higher % means more meaningful interaction.</span>
+                        </div> 
+                        <div class="qs-val">${er.toFixed(2)}%</div>
+                    </div>
+
+                    <div class="grid-2x2">
+                        <div class="metric-item"><div class="metric-label">Followers</div><div class="metric-value">${d.followers ? formatNum(d.followers) : '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Likes</div><div class="metric-value">${d.total_likes ? formatNum(d.total_likes) : '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Avg. Likes</div><div class="metric-value">${d.avg_likes ? formatNum(d.avg_likes) : '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Views</div><div class="metric-value">${d.avg_views || '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Comment</div><div class="metric-value">${d.avg_comments || '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Favorite</div><div class="metric-value">${d.avg_favorites || '-'}</div></div>
+                    </div>
+
+                    <div class="metric-item" style="margin-top:8px;">
+                        <div class="metric-label" style="font-weight:700;">Avg. Share</div>
+                        <div class="metric-value">${d.shares ? formatNum(d.shares) : '-'}</div>
+                    </div>
+
+                    <p class="footer-note">Metrics calculated from last 10 contents</p>
+
+                    <hr class="divider">
+                    <div class="timestamp">Last update: ${d.last_update}</div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-top: auto;">
+                        <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="tiktok-cta">↗ View on TikTok</a>
                     </div>
                 </div>
-            `).join('');
+            `;
+         }).join('');
         }
+
+        function openProModal()  { document.getElementById('proModalOverlay').classList.add('active'); }
+        function closeProModal() {
+            document.getElementById('proModalOverlay').classList.remove('active');
+            document.getElementById('loginErrorMessage').style.display = 'none';
+            document.getElementById('companyNameInput').value = "";
+            document.getElementById('passwordInput').value = "";
+        }
+
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('info-icon')) {
+                const tip = e.target.nextElementSibling;
+                if (tip) tip.classList.toggle('show');
+            }
+        });
 
         init();
     </script>
