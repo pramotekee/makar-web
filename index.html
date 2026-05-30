@@ -321,10 +321,9 @@
                     const uname = (w.channel_username || "").trim().toLowerCase();
                     if (!uname) return;
 
-                    const [d, m, y] = w.last_updated.split('/');
-                    const currentTimestamp = new Date(`${y}-${m}-${d}`).getTime();
+                    const currentTimestamp = new Date(w.last_updated).getTime();
 
-                    if (!weeklyMap[uname] || currentTimestamp > new Date(weeklyMap[uname].last_updated.split('/').reverse().join('-')).getTime()) {
+                    if (!weeklyMap[uname] || currentTimestamp > new Date(weeklyMap[uname].last_updated).getTime()) {
                         weeklyMap[uname] = w;
                     }
                 });
