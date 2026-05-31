@@ -160,10 +160,10 @@
                     </select>
                 </div>
                 <div>
-                    <span>Engagement Rate</span>
+                    <div class="filter-group"> <span>Engagement Rate</span>
                     <span class="score-title" style="position:relative; display:inline-flex; align-items:center;">
                         <span class="info-icon" style="cursor: pointer;">i</span>
-                        <span class="tooltiptext">The ratio of meaningful actions to followers. Tells you how many people actually engage — not just watch.</span>
+                        <span class="tooltiptext">Shows how well a creator stops the scroll and grabs attention. It’s the best way to assess the health of the channel.</span>
                     </span>
                     <button class="btn-filter btn-er active" data-er="all">All</button>
                     <button class="btn-filter btn-er" data-er="low">⚠️ Low(<2%)</button>
@@ -453,6 +453,16 @@
                 return;
             }
 
+            let filtered = allData.filter(d => { ... });
+
+            if (sortBy === "score") filtered.sort((a, b) => b.conversion_power - a.conversion_power);
+            else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; width:100%;">Creator not found</p>';
+                return;
+            }
+
             let filtered = allData.filter(d => {
                 const mc = activeCats.includes("all") || activeCats.includes(d.cat);
                 const mt = activeTiers.includes("all") || activeTiers.includes((d.group || "").toLowerCase());
@@ -477,8 +487,14 @@
             else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
 
             grid.innerHTML = filtered.map((d, i) => {
-                const er = (((parseInt(d.avg_favorites) || 0) * 2) + ((parseInt(d.avg_comments) || 0) * 3) + ((parseInt(d.shares) || 0) * 4)) / (parseInt(d.followers) || 1) * 100 || 0;
+                const favs = parseInt(d.avg_favorites) || 0;
+                const comms = parseInt(d.avg_comments) || 0;
+                const shares = parseInt(d.shares) || 0;
+                const followers = parseInt(d.followers) || 1;
 
+                const er = (((favs * 2) + (comms * 3) + (shares * 4)) / followers) * 100 || 0;
+                const cp = ((((favs * 2) + (comms * 3) + (shares * 4)) / followers) * 10).toFixed(1);
+                
                 return `
 
                 <div class="creator-card">
@@ -495,14 +511,14 @@
                                 <span class="badge badge-${d.group.toLowerCase()}">${d.group}</span>
                             </div>
                         </div>
-                        <div class="ranking-badge">#${d.rank || (i + 1)}</div>
+                        <div class="ranking-badge">#${i + 1}</div>
                     </div>
 
                     <div class="score-box">
                         <div class="score-title">
                             Engagement Rate 
-                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span>
-                            <span id="er-tip" class="tooltiptext">Shows how well a creator stops the scroll and grabs attention. It’s the best way to assess the health of the channel.</span>
+                            <span class="info-icon" onclick="toggleTooltip('er-tip-${i}')">i</span>
+                            <span id="er-tip-${i}" class="tooltiptext">Shows how well a creator stops the scroll and grabs attention. It’s the best way to assess the health of the channel.</span>
                         </div> 
                         <div class="qs-val">${er.toFixed(2)}%</div>
                     </div>
@@ -510,10 +526,10 @@
                     <div class="score-box" style="margin-top: 8px;">
                         <div class="score-title">
                             Conversion Power 
-                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip(this)">i</span>
-                            <span class="tooltiptext">Measures the creator's power to drive real action through favorites, comments, and shares. The higher the score, the better they are at turning viewers into high-intent engagers.</span>
+                            <span class="info-icon" onclick="toggleTooltip('cp-tip-${i}')">i</span>
+                            <span id="cp-tip-${i}" class="tooltiptext">Measures the creator's power to drive real action through favorites, comments, and shares. The higher the score, the better they are at turning viewers into high-intent engagers.</span>
                         </div>
-                        <div class="qs-val">${(d.conversion_power?.toFixed(1) || "0.0")}/10</div>
+                        <div class="qs-val">${cp}/10</div>
                     </div>
 
                     <div class="grid-2x2">
