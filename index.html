@@ -328,7 +328,6 @@
                 allData = creators;
                 document.getElementById('totalCreators').textContent   = allData.length;
                 document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
-                render();
 
                 const weeklyMap = {};
                 weekly.forEach(w => {
