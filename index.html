@@ -203,10 +203,10 @@
         let searchQuery = "";
         let sortBy = "score";
 
-        const PROXY = 'https://corsproxy.io/?';
-        const CREATORS_CSV  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=creators`;
-        const WEEKLY_CSV    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=weekly`;
-        const PRO_USERS_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=pro_users`;
+        const API_KEY = 'AIzaSyAWrJsndGoZ4jbu5F-aF237xaADi-sHL5k';
+        const CREATORS_URL  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/creators!A1:Z500?key=${API_KEY}`;
+        const WEEKLY_URL    = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/weekly!A1:Z500?key=${API_KEY}`;
+        const PRO_USERS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/pro_users!A1:Z500?key=${API_KEY}`;
 
         function parseCSV(text) {
             const rows = text.split('\n').filter(r => r.trim());
@@ -218,6 +218,17 @@
                 headers.forEach((h, i) => { if (values[i] !== undefined) obj[h] = values[i]; });
                 return obj;
             });
+        }
+
+        function parseSheetJSON(json) {
+            const rows = json.values || [];
+            if (rows.length === 0) return [];
+            const headers = rows[0].map(h => h.trim());
+            return rows.slice(1).map(row => {
+                let obj = {};
+                headers.forEach((h, i) => { obj[h] = row[i] || ''; });
+                return obj;
+             });
         }
 
         function setupEvents() {
@@ -305,14 +316,12 @@
 
             try {
                 const [cRes, wRes, pRes] = await Promise.all([
-                        fetch(CREATORS_CSV, {mode:'cors'}), 
-                        fetch(WEEKLY_CSV, {mode:'cors'}), 
-                        fetch(PRO_USERS_CSV, {mode:'cors'})
+                    fetch(CREATORS_URL), fetch(WEEKLY_URL), fetch(PRO_USERS_URL)
                 ]);
 
-                const creators = parseCSV(await cRes.text());
-                const weekly   = parseCSV(await wRes.text());
-                proUsersList   = parseCSV(await pRes.text());
+                const creators = parseSheetJSON(await cRes.json());
+                const weekly   = parseSheetJSON(await wRes.json());
+                proUsersList   = parseSheetJSON(await pRes.json());
 
                 allData = creators;
                 document.getElementById('totalCreators').textContent   = allData.length;
