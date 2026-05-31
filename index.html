@@ -163,12 +163,12 @@
                     <span>Engagement Rate</span>
                     <span class="score-title" style="position:relative; display:inline-flex; align-items:center;">
                         <span class="info-icon" style="cursor: pointer;">i</span>
-                        <span class="tooltiptext">Measures audience quality by weighting shares, comments, and favorites. Higher % means more meaningful interaction.</span>
+                        <span class="tooltiptext">Measures a creator's ability to drive real audience action — comments, likes, favorites and shares. The higher the percentage, the stronger their power to move people.</span>
                     </span>
-                    <button class="btn-filter btn-er active" data-er="0">All</button>
-                    <button class="btn-filter btn-er active" data-er="0">⚠️ Low(<2%)</button>
-                    <button class="btn-filter btn-er active" data-er="2">✅ Good(2–6%)</button>
-                    <button class="btn-filter btn-er active" data-er="6">🔥 High(>6%)</button>
+                    <button class="btn-filter btn-er active" data-er="all">All</button>
+                    <button class="btn-filter btn-er" data-er="low">⚠️ Low(<2%)</button>
+                    <button class="btn-filter btn-er" data-er="good">✅ Good(2–6%)</button>
+                    <button class="btn-filter btn-er" data-er="high">🔥 High(>6%)</button>
                 </div>
             </div>
         </div>
@@ -199,7 +199,7 @@
         let allData = [];
         let activeCats = ["all"];
         let activeTiers = ["all"];
-        let activeER = 0;
+        let activeER = "all";
         let searchQuery = "";
         let sortBy = "score";
 
@@ -232,31 +232,13 @@
         }
 
         function setupEvents() {
-            document.querySelectorAll('.btn-category').forEach(btn => {
+            document.querySelectorAll('.btn-er').forEach(btn => {
                btn.addEventListener('click', () => {
-                   const c = btn.dataset.cat;
-                   if (c === "all") {
-                       activeCats = ["all"];
-                       document.querySelectorAll('.btn-category').forEach(x => x.classList.remove('active'));
-                       btn.classList.add('active');
-                   } else {
-                       activeCats = activeCats.filter(x => x !== "all");
-                       const allBtn = document.querySelector('.btn-category[data-cat="all"]');
-                       if (allBtn) allBtn.classList.remove('active');
-                       if (activeCats.includes(c)) {
-                           activeCats = activeCats.filter(x => x !== c);
-                           btn.classList.remove('active');
-                           if (activeCats.length === 0) {
-                               activeCats = ["all"];
-                               if (allBtn) allBtn.classList.add('active');
-                           }
-                       } else {
-                           activeCats.push(c);
-                           btn.classList.add('active');
-                       }
-                    }
-                    render();
-                });
+                   activeER = btn.dataset.er;
+                   document.querySelectorAll('.btn-er').forEach(x => x.classList.remove('active'));
+                   btn.classList.add('active');
+                   render();
+               });
             });
 
             document.querySelectorAll('.btn-tier').forEach(btn => {
@@ -455,7 +437,11 @@
                 const followers = parseInt(d.followers) || 1;
 
                 const er = (((favs * 2) + (comms * 3) + (shares * 4)) / followers) * 100 || 0;
-                const me = er >= activeER;
+                const me = activeER === "all" ? true
+                    : activeER === "low"  ? er < 2
+                    : activeER === "good" ? er >= 2 && er <= 6
+                    : activeER === "high" ? er > 6
+                    : true;
 
                 return mc && mt && ms && me;
             });
@@ -518,7 +504,7 @@
                     <p class="footer-note">Metrics calculated from last 10 contents</p>
 
                     <hr class="divider">
-                    <div class="timestamp">Last update: ${d.last_update}</div>
+                    <div class="timestamp">last_update: ${d.last_update ? d.last_update.split('-').reverse().join('-') : 'N/A'}</div>
 
                     <div style="display:flex; flex-direction:column; gap:8px; margin-top: auto;">
                         <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="tiktok-cta">↗ View on TikTok</a>
@@ -538,8 +524,14 @@
 
         window.addEventListener('click', function(e) {
             if (e.target.classList.contains('info-icon')) {
+                e.stopPropagation();
                 const tip = e.target.nextElementSibling;
+                document.querySelectorAll('.tooltiptext').forEach(t => {
+                    if (t !== tip) t.classList.remove('show');
+                });
                 if (tip) tip.classList.toggle('show');
+            } else {
+                document.querySelectorAll('.tooltiptext').forEach(t => t.classList.remove('show'));
             }
         });
 
