@@ -315,9 +315,11 @@
             render();
 
             try {
+                console.log("Fetching...", CREATORS_URL);
                 const [cRes, wRes, pRes] = await Promise.all([
                     fetch(CREATORS_URL), fetch(WEEKLY_URL), fetch(PRO_USERS_URL)
                 ]);
+                console.log("Fetch status:", cRes.status, wRes.status, pRes.status);
 
                 const creators = parseSheetJSON(await cRes.json());
                 const weekly   = parseSheetJSON(await wRes.json());
@@ -413,7 +415,7 @@
                 return;
             }
 
-            const expiryStr = foundUser.expired_date || "";
+            const expiryStr = foundUser.expired || "";
             const parts = expiryStr.split('/');
             if (parts.length === 3) {
                 const expiryDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
