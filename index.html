@@ -155,7 +155,7 @@
                 <div>
                     <span>Sort by:</span>
                     <select id="sortSelect" class="select-sort">
-                        <option value="score">Trigger Score</option>
+                        <option value="conversion">Conversion Power</option>
                         <option value="followers">Followers</option>
                     </select>
                 </div>
@@ -237,6 +237,33 @@
                    activeER = btn.dataset.er;
                    document.querySelectorAll('.btn-er').forEach(x => x.classList.remove('active'));
                    btn.classList.add('active');
+                   render();
+               });
+            });
+
+          document.querySelectorAll('.btn-category').forEach(btn => {
+              btn.addEventListener('click', () => {
+                  const cat = btn.dataset.cat;
+                  if (cat === "all") {
+                      activeCats = ["all"];
+                      document.querySelectorAll('.btn-category').forEach(x => x.classList.remove('active'));
+                      btn.classList.add('active');
+                  } else {
+                      activeCats = activeCats.filter(x => x !== "all");
+                      document.querySelector('.btn-category[data-cat="all"]').classList.remove('active');
+            
+                      if (activeCats.includes(cat)) {
+                          activeCats = activeCats.filter(x => x !== cat);
+                          btn.classList.remove('active');
+                          if (activeCats.length === 0) {
+                              activeCats = ["all"];
+                              document.querySelector('.btn-category[data-cat="all"]').classList.add('active');
+                          }
+                      } else {
+                          activeCats.push(cat);
+                          btn.classList.add('active');
+                      }
+                   }
                    render();
                });
             });
@@ -356,7 +383,7 @@
                             avg_comments:  w.avg_comments           || '-',
                             avg_favorites: w.avg_favorites          || '-',
                             shares:        parseInt(w.avg_shares)   || 0,
-                            trigger_score: parseFloat(w.trigger_score) || 0,
+                            conversion_power: parseFloat(w.conversion_power) || 0,
                             last_update:   w.last_updated           || "N/A",
                             profile_img_url:   c.profile_img_url    || ""
                         };
@@ -446,7 +473,7 @@
                 return mc && mt && ms && me;
             });
 
-            if (sortBy === "score")     filtered.sort((a, b) => b.trigger_score - a.trigger_score);
+            if (sortBy === "score")     filtered.sort((a, b) => b.conversion_power - a.conversion_power);
             else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
 
             grid.innerHTML = filtered.map((d, i) => {
@@ -473,18 +500,20 @@
 
                     <div class="score-box">
                         <div class="score-title">
-                            Trigger Score <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip(this)">i</span>
-                            <span class="tooltiptext">Measures a creator's ability to drive real audience action — comments, likes, favorites and shares. The higher the percentage, the stronger their power to move people.</span>
-                        </div>
-                        <div class="qs-val">${(d.trigger_score?.toFixed(1) || "0.0")}/10</div>
+                            Engagement Rate 
+                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span>
+                            <span id="er-tip" class="tooltiptext">Shows how well a creator stops the scroll and grabs attention. It’s the best way to assess the health of the channel.</span>
+                        </div> 
+                        <div class="qs-val">${er.toFixed(2)}%</div>
                     </div>
 
                     <div class="score-box" style="margin-top: 8px;">
                         <div class="score-title">
-                            Engagement Rate 
-                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">The ratio of meaningful actions to followers. Tells you how many people actually engage — not just watch.</span>
-                        </div> 
-                        <div class="qs-val">${er.toFixed(2)}%</div>
+                            Conversion Power 
+                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip(this)">i</span>
+                            <span class="tooltiptext">Measures the creator's power to drive real action through favorites, comments, and shares. The higher the score, the better they are at turning viewers into high-intent engagers.</span>
+                        </div>
+                        <div class="qs-val">${(d.conversion_power?.toFixed(1) || "0.0")}/10</div>
                     </div>
 
                     <div class="grid-2x2">
@@ -522,18 +551,23 @@
             document.getElementById('passwordInput').value = "";
         }
 
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('info-icon')) {
-                e.stopPropagation();
-                const tip = e.target.nextElementSibling;
-                document.querySelectorAll('.tooltiptext').forEach(t => {
-                    if (t !== tip) t.classList.remove('show');
-                });
-                if (tip) tip.classList.toggle('show');
+        function toggleTooltipHandler(e) {
+            const isIcon = e.target.classList.contains('info-icon');
+            if (isIcon) {
+                e.preventDefault();
+                const tip = e.target.nextElementSibling?.classList.contains('tooltiptext')
+                            ? e.target.nextElementSibling
+                            : document.getElementById(e.target.getAttribute('data-target'));
+
+                document.querySelectorAll('.tooltiptext').forEach(t => { if (t !== tip) t.classList.remove('show'); });
+                tip?.classList.toggle('show');
             } else {
                 document.querySelectorAll('.tooltiptext').forEach(t => t.classList.remove('show'));
             }
-        });
+        }
+
+        window.addEventListener('touchstart', toggleTooltipHandler);
+        window.addEventListener('click', toggleTooltipHandler);
 
         init();
     </script>
