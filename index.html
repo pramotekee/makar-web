@@ -163,7 +163,7 @@
                     <span>Engagement Rate</span>
                     <span class="score-title" style="position:relative; display:inline-flex; align-items:center;">
                         <span class="info-icon" style="cursor: pointer;">i</span>
-                        <span class="tooltiptext">Measures a creator's ability to drive real audience action — comments, likes, favorites and shares. The higher the percentage, the stronger their power to move people.</span>
+                        <span class="tooltiptext">The ratio of meaningful actions to followers. Tells you how many people actually engage — not just watch.</span>
                     </span>
                     <button class="btn-filter btn-er active" data-er="all">All</button>
                     <button class="btn-filter btn-er" data-er="low">⚠️ Low(<2%)</button>
@@ -474,7 +474,7 @@
                     <div class="score-box">
                         <div class="score-title">
                             Trigger Score <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip(this)">i</span>
-                            <span class="tooltiptext">Creator quality metric considering consistent views, true engagement rate, and growth velocity.</span>
+                            <span class="tooltiptext">Measures a creator's ability to drive real audience action — comments, likes, favorites and shares. The higher the percentage, the stronger their power to move people.</span>
                         </div>
                         <div class="qs-val">${(d.trigger_score?.toFixed(1) || "0.0")}/10</div>
                     </div>
@@ -482,7 +482,7 @@
                     <div class="score-box" style="margin-top: 8px;">
                         <div class="score-title">
                             Engagement Rate 
-                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">Measures audience quality by weighting shares, comments, and favorites. Higher % means more meaningful interaction.</span>
+                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">The ratio of meaningful actions to followers. Tells you how many people actually engage — not just watch.</span>
                         </div> 
                         <div class="qs-val">${er.toFixed(2)}%</div>
                     </div>
