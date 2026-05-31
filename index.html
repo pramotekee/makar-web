@@ -342,6 +342,7 @@
                     }
                 });
                 console.log("weeklyMap keys:", Object.keys(weeklyMap));
+                console.log("creators unames:", creators.map(c => (c.channel_username||"").trim().toLowerCase())); 
 
                 if (creators.length > 0) {
                     allData = creators.map((c, index) => {
