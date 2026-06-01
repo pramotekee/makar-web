@@ -328,11 +328,12 @@
                 const weekly   = parseSheetJSON(await wRes.json());
                 proUsersList   = parseSheetJSON(await pRes.json());
 
+                console.log("จำนวน Creator ที่ดึงมาได้:", creators.length);
                 allData = creators;
                 document.getElementById('totalCreators').textContent = allData.length;
-                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
 
-                const cats = [...new Set(allData.map(c => c.cat).filter(Boolean))];
+                const cats = [...new Set(allData.map(c => c.category).filter(Boolean))];
                 const catContainer = document.querySelector('.btn-category[data-cat="all"]').parentElement;
 catContainer.querySelectorAll('.btn-category:not([data-cat="all"])').forEach(b => b.remove());
 cats.forEach(cat => {
@@ -416,7 +417,7 @@ cats.forEach(cat => {
                 }
 
                 document.getElementById('totalCreators').textContent   = allData.length;
-                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
                 render(); // ไม่มี setupEvents() แล้ว
 
             } catch (e) {
