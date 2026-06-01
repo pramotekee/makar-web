@@ -242,6 +242,28 @@
                });
             });
 
+            document.querySelectorAll('.btn-category').forEach(btn => {
+               btn.addEventListener('click', () => {
+                   const cat = btn.dataset.cat;
+                   if (cat === "all") {
+                       activeCats = ["all"];
+                   } else {
+                       activeCats = activeCats.filter(x => x !== "all");
+                       if (activeCats.includes(cat)) {
+                           activeCats = activeCats.filter(x => x !== cat);
+                       } else {
+                           activeCats.push(cat);
+                       }
+                   }
+                   document.querySelectorAll('.btn-category').forEach(x => x.classList.remove('active'));
+                   if (activeCats.length === 0) activeCats = ["all"];
+                   document.querySelectorAll('.btn-category').forEach(x => {
+                       if (activeCats.includes(x.dataset.cat)) x.classList.add('active');
+                   });
+                   render();
+                });
+            });
+
             document.querySelectorAll('.btn-tier').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const t = btn.dataset.tier;
@@ -420,6 +442,14 @@
             return n;
         }
 
+        function parseViews(v) {
+            if (!v) return 1;
+            const s = String(v).replace(/,/g, '');
+            if (s.toLowerCase().includes('k')) return parseFloat(s) * 1000;
+            if (s.toLowerCase().includes('m')) return parseFloat(s) * 1000000;
+            return parseInt(s) || 1;
+        }
+
         function calcConversionPower(d) {
             const views = parseViews(d.avg_views);
             const followers = parseInt(d.followers) || 1;
@@ -463,7 +493,7 @@
                 return mc && mt && ms && me;
             });
 
-            if (sortBy === "score")     filtered.sort((a, b) => b.trigger_score - a.trigger_score);
+            if (sortBy === "score") filtered.sort((a, b) => calcConversionPower(b) - calcConversionPower(a));
             else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
 
             grid.innerHTML = filtered.map((d, i) => {
