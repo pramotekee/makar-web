@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,24 +152,24 @@
                 </div>
             </div>
 
-            <div class="sort-row">
-                <div>
-                    <span>Sort by:</span>
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+                <span class="filter-label">Sort by</span>
                     <select id="sortSelect" class="select-sort">
-                        <option value="conversion">Conversion Power</option>
+                        <option value="score">Conversion Power</option>
                         <option value="followers">Followers</option>
                     </select>
                 </div>
-                <div>
-                    <div class="filter-group"> <span>Engagement Rate</span>
-                    <span class="score-title" style="position:relative; display:inline-flex; align-items:center;">
-                        <span class="info-icon" style="cursor: pointer;">i</span>
-                        <span class="tooltiptext">Shows how well a creator stops the scroll and grabs attention. It’s the best way to assess the health of the channel.</span>
+
+                <div class="filter-group">
+                    <span class="filter-label">Engagement Rate
+                        <span class="info-icon" style="cursor:pointer;">i</span>
+                        <span class="tooltiptext">Measures a creator's ability to drive audience action intent 
+by weighting comments, favorites and shares with likes as a supporting signal. The higher the percentage, the stronger their power to move people.</span>
                     </span>
                     <button class="btn-filter btn-er active" data-er="all">All</button>
-                    <button class="btn-filter btn-er" data-er="low">⚠️ Low(<2%)</button>
+                    <button class="btn-filter btn-er" data-er="low">⚠️ Low(&lt;2%)</button>
                     <button class="btn-filter btn-er" data-er="good">✅ Good(2–6%)</button>
-                    <button class="btn-filter btn-er" data-er="high">🔥 High(>6%)</button>
+                    <button class="btn-filter btn-er" data-er="high">🔥 High(&gt;6%)</button>
                 </div>
             </div>
         </div>
@@ -237,33 +238,6 @@
                    activeER = btn.dataset.er;
                    document.querySelectorAll('.btn-er').forEach(x => x.classList.remove('active'));
                    btn.classList.add('active');
-                   render();
-               });
-            });
-
-          document.querySelectorAll('.btn-category').forEach(btn => {
-              btn.addEventListener('click', () => {
-                  const cat = btn.dataset.cat;
-                  if (cat === "all") {
-                      activeCats = ["all"];
-                      document.querySelectorAll('.btn-category').forEach(x => x.classList.remove('active'));
-                      btn.classList.add('active');
-                  } else {
-                      activeCats = activeCats.filter(x => x !== "all");
-                      document.querySelector('.btn-category[data-cat="all"]').classList.remove('active');
-            
-                      if (activeCats.includes(cat)) {
-                          activeCats = activeCats.filter(x => x !== cat);
-                          btn.classList.remove('active');
-                          if (activeCats.length === 0) {
-                              activeCats = ["all"];
-                              document.querySelector('.btn-category[data-cat="all"]').classList.add('active');
-                          }
-                      } else {
-                          activeCats.push(cat);
-                          btn.classList.add('active');
-                      }
-                   }
                    render();
                });
             });
@@ -367,7 +341,8 @@
                         const comms = parseInt(w.avg_comments) || 0;
                         const shares = parseInt(w.avg_shares) || 0;
                         const followers = parseInt(w.followers) || 1;
-                        const er = (((favs * 2) + (comms * 3) + (shares * 4)) / followers) * 100 || 0;
+                        const views = parseInt(w.avg_views) || 1;
+                        const er = ((favs * 2) + (comms * 3) + (shares * 4) + (parseInt(w.avg_likes) || 0)) / views * 100 || 0;
 
                         return {
                             rank:          index + 1,
@@ -383,7 +358,7 @@
                             avg_comments:  w.avg_comments           || '-',
                             avg_favorites: w.avg_favorites          || '-',
                             shares:        parseInt(w.avg_shares)   || 0,
-                            conversion_power: parseFloat(w.conversion_power) || 0,
+                            trigger_score: parseFloat(w.trigger_score) || 0,
                             last_update:   w.last_updated           || "N/A",
                             profile_img_url:   c.profile_img_url    || ""
                         };
@@ -445,6 +420,23 @@
             return n;
         }
 
+        function calcConversionPower(d) {
+            const views = parseViews(d.avg_views);
+            const followers = parseInt(d.followers) || 1;
+            const comments = parseInt(d.avg_comments) || 0;
+            const favorites = parseInt(d.avg_favorites) || 0;
+            const shares = parseInt(d.shares) || 0;
+            const total_likes = parseInt(d.total_likes) || 0;
+
+            const highIntent = ((comments * 3) + (favorites * 2) + (shares * 5)) / views * 100;
+            const likeDensity = total_likes / followers * 100;
+
+            return (highIntent * 0.6) + (likeDensity * 0.4);
+        }
+
+        function render() {
+
+
         function render() {
             const grid = document.getElementById('creatorsGrid');
 
@@ -453,52 +445,67 @@
                 return;
             }
 
-            
             let filtered = allData.filter(d => {
                 const mc = activeCats.includes("all") || activeCats.includes(d.cat);
                 const mt = activeTiers.includes("all") || activeTiers.includes((d.group || "").toLowerCase());
                 const ms = d.name.toLowerCase().includes(searchQuery) || d.handle.toLowerCase().includes(searchQuery);
+
+                const favs = parseInt(d.avg_favorites) || 0;
+                const comms = parseInt(d.avg_comments) || 0;
+                const shares = parseInt(d.shares) || 0;
+                const followers = parseInt(d.followers) || 1;
+
+                const views = parseInt(d.avg_views) || 1;
+                const er = ((favs * 2) + (comms * 3) + (shares * 4) + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
                 const me = activeER === "all" ? true
-                         : activeER === "low"  ? er < 2
-                         : activeER === "good" ? er >= 2 && er <= 6
-                         : activeER === "high" ? er > 6
-                         : d.er > 6;
+                    : activeER === "low"  ? er < 2
+                    : activeER === "good" ? er >= 2 && er <= 6
+                    : activeER === "high" ? er > 6
+                    : true;
 
                 return mc && mt && ms && me;
             });
 
-            if (sortBy === "conversion")     filtered.sort((a, b) => b.conversion_power - a.conversion_power);
+            if (sortBy === "score")     filtered.sort((a, b) => b.trigger_score - a.trigger_score);
             else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
 
-            if (!filtered.length) return grid.innerHTML = '<p>No creator matches your filter</p>';
+            grid.innerHTML = filtered.map((d, i) => {
+                const views = parseInt(d.avg_views) || 1;
+                const er = (((parseInt(d.avg_favorites) || 0) * 2) + ((parseInt(d.avg_comments) || 0) * 3) + ((parseInt(d.shares) || 0) * 4) + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
 
-            grid.innerHTML = filtered.map((d, i) => `
+                return `
+
                 <div class="creator-card">
                     <div class="card-header">
-                        ${d.profile_img_url ? `<img src="${d.profile_img_url}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">` : `<div class="avatar">${d.handle.charAt(0).toUpperCase()}</div>`}
+                        ${d.profile_img_url 
+                            ? `<img src="${d.profile_img_url}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">`
+                            : `<div class="avatar" style="background:#E5E7EB;color:#000;">${d.handle.charAt(0).toUpperCase()}</div>`
+                        }
                         <div style="min-width: 0; flex: 1;">
                             <h3 style="font-weight: 700; font-size: 1.1rem;">${d.name}</h3>
                             <p>@${d.handle}</p>
+                            <div class="badge-row">
+                                <span class="badge badge-cat">${d.cat}</span>
+                                <span class="badge badge-${d.group.toLowerCase()}">${d.group}</span>
+                            </div>
                         </div>
                         <div class="ranking-badge">#${i + 1}</div>
                     </div>
 
-                    <div class="score-box">
                         <div class="score-title">
                             Engagement Rate 
-                            <span class="info-icon" onclick="toggleTooltip('er-tip-${i}')">i</span>
-                            <span id="er-tip-${i}" class="tooltiptext">Shows how well a creator stops the scroll and grabs attention. It’s the best way to assess the health of the channel.</span>
+                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">The percentage of viewers who took any action on a creator's content.</span>
                         </div> 
-                        <div class="qs-val">${d.er.toFixed(2)}%</div>
+                        <div class="qs-val">${er.toFixed(2)}%</div>
                     </div>
 
-                    <div class="score-box" style="margin-top: 8px;">
+                    <div class="score-box" style="margin-top: 8px; background: linear-gradient(135deg, #E8EEF9 0%, #7B9ED9 100%); border-color: #5A7EC7;">
                         <div class="score-title">
-                            Conversion Power 
-                            <span class="info-icon" onclick="toggleTooltip('cp-tip-${i}')">i</span>
-                            <span id="cp-tip-${i}" class="tooltiptext">Measures the creator's power to drive real action through favorites, comments, and shares. The higher the score, the better they are at turning viewers into high-intent engagers.</span>
+                            Conversion Power
+                            <span class="info-icon" onclick="toggleTooltip(this)">i</span>
+                            <span class="tooltiptext">Measures a creator's ability to drive audience action intent by weighting comments, favorites and shares — with likes as a supporting signal. The higher the percentage, the stronger their power to move people.</span>
                         </div>
-                        <div class="qs-val">${d.conversion_power.toFixed(1)}/10</div>
+                        <div class="qs-val">${calcConversionPower(d).toFixed(2)}%</div>
                     </div>
 
                     <div class="grid-2x2">
@@ -536,23 +543,19 @@
             document.getElementById('passwordInput').value = "";
         }
 
-        function toggleTooltipHandler(e) {
-            const isIcon = e.target.classList.contains('info-icon');
-            if (isIcon) {
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('info-icon')) {
+                e.stopPropagation();
                 e.preventDefault();
-                const tip = e.target.nextElementSibling?.classList.contains('tooltiptext')
-                            ? e.target.nextElementSibling
-                            : document.getElementById(e.target.getAttribute('data-target'));
-
-                document.querySelectorAll('.tooltiptext').forEach(t => { if (t !== tip) t.classList.remove('show'); });
-                tip?.classList.toggle('show');
-            } else {
+                const tip = e.target.nextElementSibling;
+                document.querySelectorAll('.tooltiptext').forEach(t => {
+                    if (t !== tip) t.classList.remove('show');
+                });
+                if (tip) tip.classList.toggle('show');
+            } else if (!e.target.classList.contains('tooltiptext')) {
                 document.querySelectorAll('.tooltiptext').forEach(t => t.classList.remove('show'));
             }
-        }
-
-        window.addEventListener('touchstart', toggleTooltipHandler);
-        window.addEventListener('click', toggleTooltipHandler);
+        }, true);
 
         init();
     </script>
