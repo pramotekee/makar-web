@@ -42,9 +42,7 @@
         .main-container { max-width: 1400px; margin: -2rem auto 3rem auto; padding: 0 1rem; width: 100%; }
         .filter-card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
         .search-box { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; background: #F3F4F6; font-size: 1rem; margin-bottom: 1.5rem; outline: none; }
-
-        .filter-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
-        .filter-group { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-group { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-start; width: 100%; }
         .filter-label { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-right: 0.5rem; }
 
         .btn-filter { background: #E5E7EB; color: #000000; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 500; border: none; }
@@ -133,45 +131,42 @@
     <main class="main-container">
         <div class="filter-card">
             <input type="text" class="search-box" placeholder="Search by name or username..." id="searchInput">
-            
-            <div class="filter-row">
-                <div class="filter-group">
-                    <span class="filter-label">Category</span>
-                    <button class="btn-filter btn-category active" data-cat="all">All</button>
-                    <button class="btn-filter btn-category" data-cat="Beauty">Beauty</button>
-                    <button class="btn-filter btn-category" data-cat="Food">Food</button>
-                    <button class="btn-filter btn-category" data-cat="Finance">Finance</button>
-                    <button class="btn-filter btn-category" data-cat="Career">Career</button>
-                </div>
-                <div class="filter-group">
-                    <span class="filter-label">Tier</span>
-                    <button class="btn-tier active" data-tier="all">All</button>
-                    <button class="btn-tier" data-tier="rise">Rise 10K–39K</button>
-                    <button class="btn-tier" data-tier="growth">Growth 40K–79K</button>
-                    <button class="btn-tier" data-tier="lead">Lead 80K–100K</button>
-                </div>
-            </div>
 
-            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
-                <span class="filter-label">Sort by</span>
-                    <select id="sortSelect" class="select-sort">
-                        <option value="score">Conversion Power</option>
-                        <option value="followers">Followers</option>
-                    </select>
-                </div>
+            <div class="filter-group" style="margin-bottom:1rem;">
+                <span class="filter-label">Category</span>
+                <button class="btn-filter btn-category active" data-cat="all">All</button>
+                <button class="btn-filter btn-category" data-cat="Beauty">Beauty</button>
+                <button class="btn-filter btn-category" data-cat="Food">Food</button>
+                <button class="btn-filter btn-category" data-cat="Finance">Finance</button>
+                <button class="btn-filter btn-category" data-cat="Career">Career</button>
+           </div>
 
-                <div class="filter-group">
-                    <span class="filter-label">Engagement Rate</span>
-                    <span style="position:relative; display:inline-flex; align-items:center;">
-                        <span class="info-icon" style="cursor:pointer;">i</span>
-                        <span class="tooltiptext">The percentage of viewers who took any action on a creator's content.</span>
-                    </span>
-                    <button class="btn-filter btn-er active" data-er="all">All</button>
-                    <button class="btn-filter btn-er" data-er="low">⚠️ Low(&lt;2%)</button>
-                    <button class="btn-filter btn-er" data-er="good">✅ Good(2–6%)</button>
-                    <button class="btn-filter btn-er" data-er="high">🔥 High(&gt;6%)</button>
-                </div>
-            </div>
+           <div class="filter-group" style="margin-bottom:1rem;">
+               <span class="filter-label">Tier</span>
+               <button class="btn-tier active" data-tier="all">All</button>
+               <button class="btn-tier" data-tier="rise">Rise 10K–39K</button>
+               <button class="btn-tier" data-tier="growth">Growth 40K–79K</button>
+               <button class="btn-tier" data-tier="lead">Lead 80K–100K</button>
+           </div>
+
+           <div class="filter-group" style="margin-bottom:1rem;">
+               <span class="filter-label">Engagement Rate</span>
+               <span style="position:relative; display:inline-flex; align-items:center; margin-right:0.5rem;">
+                   <span class="info-icon" style="cursor:pointer;">i</span>
+                   <span class="tooltiptext">The percentage of viewers who took any action on a creator's content.</span>
+               </span>
+               <button class="btn-filter btn-er active" data-er="all">All</button>
+               <button class="btn-filter btn-er" data-er="low">0–3%</button>
+               <button class="btn-filter btn-er" data-er="mid">4–6%</button>
+               <button class="btn-filter btn-er" data-er="good">7–10%</button>
+               <button class="btn-filter btn-er" data-er="high">&gt;10%</button>
+           </div>
+
+           <div class="filter-group">
+               <span class="filter-label">Sort by</span>
+               <button class="btn-filter btn-sort active" data-sort="followers">Followers</button>
+               <button class="btn-filter btn-sort" data-sort="score">Conversion Power</button>
+           </div>
         </div>
 
         <section class="creator-grid" id="creatorsGrid"></section>
@@ -202,7 +197,7 @@
         let activeTiers = ["all"];
         let activeER = "all";
         let searchQuery = "";
-        let sortBy = "score";
+        let sortBy = "followers";
 
         const API_KEY = 'AIzaSyACI2fJb_s3iaMd77iQQOPEkKGGfukjnb4';
         const CREATORS_URL  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/creators!A1:Z500?key=${API_KEY}`;
@@ -306,9 +301,13 @@
                 render();
             });
 
-            document.getElementById('sortSelect').addEventListener('change', (e) => {
-                sortBy = e.target.value;
-                render();
+            document.querySelectorAll('.btn-sort').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sortBy = btn.dataset.sort;
+                    document.querySelectorAll('.btn-sort').forEach(x => x.classList.remove('active'));
+                    btn.classList.add('active');
+                    render();
+                });
             });
 
             document.getElementById('triggerProNav').onclick = openProModal;
@@ -483,10 +482,11 @@
 
                 const views = parseInt(d.avg_views) || 1;
                 const er = (favs + comms + shares + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
-                const me = activeER === "all" ? true
-                    : activeER === "low"  ? er < 2
-                    : activeER === "good" ? er >= 2 && er <= 6
-                    : activeER === "high" ? er > 6
+                const me = activeER === "all"  ? true
+                    : activeER === "low"  ? er >= 0 && er <= 3
+                    : activeER === "mid"  ? er > 3 && er <= 6
+                    : activeER === "good" ? er > 6 && er <= 10
+                    : activeER === "high" ? er > 10
                     : true;
 
                 return mc && mt && ms && me;
@@ -552,7 +552,7 @@
                     <p class="footer-note">Metrics calculated from last 10 contents</p>
 
                     <hr class="divider">
-                    <div class="timestamp">last_update: ${d.last_update ? d.last_update.split('-').reverse().join('-') : 'N/A'}</div>
+                    <div class="timestamp">Last update: ${d.last_update ? d.last_update.split('-').reverse().join('-') : 'N/A'}</div>
 
                     <div style="display:flex; flex-direction:column; gap:8px; margin-top: auto;">
                         <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="tiktok-cta">↗ View on TikTok</a>
