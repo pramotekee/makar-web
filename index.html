@@ -331,7 +331,7 @@
                 console.log("จำนวน Creator ที่ดึงมาได้:", creators.length);
                 allData = creators;
                 document.getElementById('totalCreators').textContent = allData.length;
-                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
 
                 const cats = [...new Set(allData.map(c => c.category).filter(Boolean))];
                 const catContainer = document.querySelector('.btn-category[data-cat="all"]').parentElement;
@@ -415,7 +415,7 @@ cats.forEach(cat => {
                 }
 
                 document.getElementById('totalCreators').textContent   = allData.length;
-                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
                 const totalFollowers = allData.reduce((sum, c) => sum + (c.followers || 0), 0);
                 document.getElementById('totalFollowers').textContent = formatNum(totalFollowers);
                 render(); // ไม่มี setupEvents() แล้ว
