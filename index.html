@@ -32,7 +32,7 @@
         .logo { font-size: 1.5rem; font-weight: 700; font-style: italic; color: var(--logo-color); }
         .btn-pro { background-color: var(--pro-btn-bg); color: #fff; padding: 0.5rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; }
 
-        .hero { background-color: var(--hero-bg); text-align: center; padding: 4rem 1rem; color: #fff; }
+        .hero { background: linear-gradient(135deg, #FFB340 0%, #FF9300 60%, #E67E00 100%); text-align: center; padding: 4rem 1rem; color: #fff; }
         .hero h1 { font-size: 3.5rem; font-style: italic; font-weight: 700; margin-bottom: 1rem; color: #000; }
         .hero p { color: var(--hero-text); font-size: 1.1rem; margin-bottom: 2rem; }
         .stats-container { display: flex; justify-content: center; gap: 3rem; }
@@ -50,7 +50,7 @@
         .btn-filter { background: #E5E7EB; color: #000000; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 500; border: none; }
         .btn-filter.active { background: #000000; color: #ffffff; font-weight: 700; }
 
-        .btn-tier { background: #E5E7EB; color: #374151; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; border: none; }
+        .btn-tier { background: #E5E7EB; color: #374151; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 500; border: none; }
         .btn-tier.active[data-tier="all"] { background: #000000; color: #fff; }
         .btn-tier.active[data-tier="rise"] { background-color: var(--tier-rise); color: #fff; }
         .btn-tier.active[data-tier="growth"] { background-color: var(--tier-growth); color: #fff; }
@@ -138,10 +138,6 @@
                 <span class="filter-label">Category</span>
                 <div>
                     <button class="btn-filter btn-category active" data-cat="all">All</button>
-                    <button class="btn-filter btn-category" data-cat="Beauty">Beauty</button>
-                    <button class="btn-filter btn-category" data-cat="Food">Food</button>
-                    <button class="btn-filter btn-category" data-cat="Finance">Finance</button>
-                    <button class="btn-filter btn-category" data-cat="Career">Career</button>
                 </div>
             </div>
 
@@ -156,13 +152,7 @@
            </div>
 
            <div class="filter-group" style="margin-bottom:1rem;">
-               <div style="display:flex; align-items:center; gap:0.4rem;">
-                   <span class="filter-label">Engagement Rate</span>
-                   <span style="position:relative; display:inline-flex; align-items:center; margin-right:0.5rem; z-index:100;">
-                       <span class="info-icon" style="cursor:pointer;">i</span>
-                       <span class="tooltiptext" style="bottom:130%; left:0;">The percentage of viewers who took any action on a creator's content.</span>
-                   </span>
-               </div>
+               <span class="filter-label">Engagement Rate</span>
                <div>
                    <button class="btn-filter btn-er active" data-er="all">All</button>
                    <button class="btn-filter btn-er" data-er="low">0–3%</button>
@@ -341,8 +331,38 @@
                 proUsersList   = parseSheetJSON(await pRes.json());
 
                 allData = creators;
-                document.getElementById('totalCreators').textContent   = allData.length;
-                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
+                document.getElementById('totalCreators').textContent = allData.length;
+                document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.cat)).size;
+
+                const cats = [...new Set(allData.map(c => c.cat).filter(Boolean))];
+                const catContainer = document.querySelector('.btn-category[data-cat="all"]').parentElement;
+catContainer.querySelectorAll('.btn-category:not([data-cat="all"])').forEach(b => b.remove());
+cats.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-filter btn-category';
+                    btn.dataset.cat = cat;
+                    btn.textContent = cat;
+                    catContainer.appendChild(btn);
+                    btn.addEventListener('click', () => {
+                        const c = btn.dataset.cat;
+                        activeCats = activeCats.filter(x => x !== "all");
+                        document.querySelector('.btn-category[data-cat="all"]').classList.remove('active');
+                        if (activeCats.includes(c)) {
+                            activeCats = activeCats.filter(x => x !== c);
+                            btn.classList.remove('active');
+                            if (activeCats.length === 0) {
+                                activeCats = ["all"];
+                                document.querySelector('.btn-category[data-cat="all"]').classList.add('active');
+                            }
+                        } else {
+                            activeCats.push(c);
+                            btn.classList.add('active');
+                        }
+                        render();
+                    });
+                });
+
+                render();
 
                 const weeklyMap = {};
                 weekly.forEach(w => {
@@ -555,9 +575,9 @@
                         <div class="metric-item"><div class="metric-label">Followers</div><div class="metric-value">${d.followers ? formatNum(d.followers) : '-'}</div></div>
                         <div class="metric-item"><div class="metric-label">Total Likes</div><div class="metric-value">${d.total_likes ? formatNum(d.total_likes) : '-'}</div></div>
                         <div class="metric-item"><div class="metric-label">Avg. Likes</div><div class="metric-value">${d.avg_likes ? formatNum(d.avg_likes) : '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Views</div><div class="metric-value">${d.avg_views || '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Comment</div><div class="metric-value">${d.avg_comments || '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Favorite</div><div class="metric-value">${d.avg_favorites || '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Views</div><div class="metric-value">${d.avg_views ? formatNum(parseViews(d.avg_views)) : '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Comment</div><div class="metric-value">${d.avg_comments ? formatNum(parseInt(d.avg_comments)) : '-'}</div></div>
+                        <div class="metric-item"><div class="metric-label">Favorite</div><div class="metric-value">${d.avg_favorites ? formatNum(parseInt(d.avg_favorites)) : '-'}</div></div>
                     </div>
 
                     <div class="metric-item" style="margin-top:8px;">
