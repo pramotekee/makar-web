@@ -364,7 +364,7 @@
                         const shares = parseInt(w.avg_shares) || 0;
                         const followers = parseInt(w.followers) || 1;
                         const views = parseInt(w.avg_views) || 1;
-                        const er = ((favs * 2) + (comms * 3) + (shares * 4) + (parseInt(w.avg_likes) || 0)) / views * 100 || 0;
+                        const er = (favs + comms + shares + (parseInt(w.avg_likes) || 0)) / views * 100 || 0;
 
                         return {
                             rank:          index + 1,
@@ -451,17 +451,16 @@
         }
 
         function calcConversionPower(d) {
-            const views = parseViews(d.avg_views);
-            const followers = parseInt(d.followers) || 1;
             const comments = parseInt(d.avg_comments) || 0;
             const favorites = parseInt(d.avg_favorites) || 0;
             const shares = parseInt(d.shares) || 0;
-            const total_likes = parseInt(d.total_likes) || 0;
+            const likes = parseInt(d.avg_likes) || 0;
 
-            const highIntent = ((comments * 3) + (favorites * 2) + (shares * 5)) / views * 100;
-            const likeDensity = total_likes / followers * 100;
+            const total = likes + comments + favorites + shares;
+            if (total === 0) return 0;
 
-            return (highIntent * 0.6) + (likeDensity * 0.4);
+
+            return ((comments * 3) + (favorites * 2) + (shares * 5)) / total * 100;
         }
 
         function render() {
@@ -483,7 +482,7 @@
                 const followers = parseInt(d.followers) || 1;
 
                 const views = parseInt(d.avg_views) || 1;
-                const er = ((favs * 2) + (comms * 3) + (shares * 4) + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
+                const er = (favs + comms + shares + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
                 const me = activeER === "all" ? true
                     : activeER === "low"  ? er < 2
                     : activeER === "good" ? er >= 2 && er <= 6
@@ -498,7 +497,7 @@
 
             grid.innerHTML = filtered.map((d, i) => {
                 const views = parseInt(d.avg_views) || 1;
-                const er = (((parseInt(d.avg_favorites) || 0) * 2) + ((parseInt(d.avg_comments) || 0) * 3) + ((parseInt(d.shares) || 0) * 4) + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
+                const er = ((parseInt(d.avg_favorites) || 0) + (parseInt(d.avg_comments) || 0) + (parseInt(d.shares) || 0) + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
 
                 return `
 
