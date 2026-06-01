@@ -317,8 +317,6 @@
         async function init() {
             setupEvents(); // เรียกแค่ครั้งเดียว
 
-            render();
-
             try {
                 console.log("Fetching...", CREATORS_URL);
                 const [cRes, wRes, pRes] = await Promise.all([
