@@ -161,10 +161,10 @@
                 </div>
 
                 <div class="filter-group">
-                    <span class="filter-label">Engagement Rate
+                    <span class="filter-label">Engagement Rate</span>
+                    <span style="position:relative; display:inline-flex; align-items:center;">
                         <span class="info-icon" style="cursor:pointer;">i</span>
-                        <span class="tooltiptext">Measures a creator's ability to drive audience action intent 
-by weighting comments, favorites and shares with likes as a supporting signal. The higher the percentage, the stronger their power to move people.</span>
+                        <span class="tooltiptext">The percentage of viewers who took any action on a creator's content.</span>
                     </span>
                     <button class="btn-filter btn-er active" data-er="all">All</button>
                     <button class="btn-filter btn-er" data-er="low">⚠️ Low(&lt;2%)</button>
@@ -435,9 +435,6 @@ by weighting comments, favorites and shares with likes as a supporting signal. T
         }
 
         function render() {
-
-
-        function render() {
             const grid = document.getElementById('creatorsGrid');
 
             if (allData.length === 0) {
@@ -492,6 +489,7 @@ by weighting comments, favorites and shares with likes as a supporting signal. T
                         <div class="ranking-badge">#${i + 1}</div>
                     </div>
 
+                    <div class="score-box">
                         <div class="score-title">
                             Engagement Rate 
                             <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">The percentage of viewers who took any action on a creator's content.</span>
