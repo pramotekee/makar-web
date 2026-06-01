@@ -124,8 +124,8 @@
                 <p>categories covered</p>
             </div>
             <div class="stat-item">
-                <h3>10K–100K</h3>
-                <p>our focus range</p>
+                <h3 id="totalFollowers">0</h3>
+                <p>total followers</p>
             </div>
         </div>
     </header>
@@ -361,8 +361,6 @@ cats.forEach(cat => {
                     });
                 });
 
-                render();
-
                 const weeklyMap = {};
                 weekly.forEach(w => {
                     const uname = (w.channel_username || "").trim().toLowerCase();
@@ -418,6 +416,8 @@ cats.forEach(cat => {
 
                 document.getElementById('totalCreators').textContent   = allData.length;
                 document.getElementById('totalCategories').textContent = new Set(allData.map(c => c.category)).size;
+                const totalFollowers = allData.reduce((sum, c) => sum + (c.followers || 0), 0);
+                document.getElementById('totalFollowers').textContent = formatNum(totalFollowers);
                 render(); // ไม่มี setupEvents() แล้ว
 
             } catch (e) {
