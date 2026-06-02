@@ -484,12 +484,13 @@ cats.forEach(cat => {
             const favorites = parseInt(d.avg_favorites) || 0;
             const shares = parseInt(d.shares) || 0;
             const likes = parseInt(d.avg_likes) || 0;
+            const views = parseViews(d.avg_views);
 
-            const total = likes + comments + favorites + shares;
-            if (total === 0) return 0;
+            const highIntent = ((comments * 3) + (favorites * 2) + (shares * 5)) / views * 100;
+            const likeDensity = likes / views * 100;
+            const cp = (highIntent * 0.6) + (likeDensity * 0.4);
 
-
-            return ((comments * 3) + (favorites * 2) + (shares * 5)) / total * 100;
+            return Math.min(cp / 10, 10);
         }
 
         function render() {
@@ -567,7 +568,7 @@ cats.forEach(cat => {
                             <span class="info-icon" onclick="toggleTooltip(this)">i</span>
                             <span class="tooltiptext">Measures a creator's ability to drive audience action intent by weighting comments, favorites and shares — with likes as a supporting signal. The higher the percentage, the stronger their power to move people.</span>
                         </div>
-                        <div class="qs-val">${calcConversionPower(d).toFixed(2)}%</div>
+                        <div class="qs-val">${calcConversionPower(d).toFixed(1)}/10</div>
                     </div>
 
                     <div class="grid-2x2">
