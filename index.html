@@ -659,9 +659,9 @@ cats.forEach(cat => {
 
         window.addEventListener('click', function(e) {
             if (e.target.classList.contains('info-icon')) {
+                if (e.target.dataset.modal === 'img') return;
                 e.stopPropagation();
                 e.preventDefault();
-                if (e.target.dataset.modal === 'img') return;
                 const tip = e.target.nextElementSibling;
                 document.querySelectorAll('.tooltiptext').forEach(t => {
                     if (t !== tip) t.classList.remove('show');
