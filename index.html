@@ -131,6 +131,10 @@
              line-height: 1.5;
              margin-top: 0.1rem;
          }
+ 
+         .img-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; cursor:pointer; }
+         .img-modal-overlay.active { display:flex; }
+         .img-modal-overlay img { max-width:90%; max-height:90vh; border-radius:12px; }
     </style>
 </head>
 <body>
@@ -598,7 +602,7 @@ cats.forEach(cat => {
                         <div class="qs-val">${er.toFixed(2)}%</div>
                     </div>
 
-                    <div class="score-box" style="margin-top: 8px; background: linear-gradient(135deg, #E8EEF9 0%, #7B9ED9 100%); border-color: #5A7EC7;">
+                    <div class="score-box" style="background: linear-gradient(135deg, #E8EEF9 0%, #7B9ED9 100%); border-color: #5A7EC7;">
                         <div class="score-title">
                             Conversion Power
                             <span class="info-icon" onclick="toggleTooltip(this)">i</span>
@@ -612,7 +616,7 @@ cats.forEach(cat => {
                         const a  = getArchetype(er, cp);
                         return `
                         <div class="archetype-card">
-                            <div class="archetype-label">About this week</div>
+                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://drive.google.com/uc?export=view&id=1z8KM6CzAZbQELpgc_0rwFpOraPGfzYRS'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer;">i</span></div>
                             <div class="archetype-name">${a.emoji} ${a.name}</div>
                             <div class="archetype-caption">${a.caption}</div>
                         </div>`;
@@ -657,6 +661,7 @@ cats.forEach(cat => {
             if (e.target.classList.contains('info-icon')) {
                 e.stopPropagation();
                 e.preventDefault();
+                if (e.target.dataset.modal === 'img') return;
                 const tip = e.target.nextElementSibling;
                 document.querySelectorAll('.tooltiptext').forEach(t => {
                     if (t !== tip) t.classList.remove('show');
@@ -669,5 +674,10 @@ cats.forEach(cat => {
 
         init();
     </script>
+
+    <div class="img-modal-overlay" id="imgModalOverlay" onclick="this.classList.remove('active')">
+        <img id="imgModalContent" src="">
+    </div>
+
 </body>
 </html>
