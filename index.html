@@ -135,6 +135,41 @@
          .img-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; cursor:pointer; }
          .img-modal-overlay.active { display:flex; }
          .img-modal-overlay img { max-width:90%; max-height:90vh; border-radius:12px; }
+
+         .avg-weekly-bar {
+             display: flex;
+             gap: 0.6rem;
+             font-size: 0.82rem;
+             color: var(--text-muted);
+             flex-wrap: wrap;
+             align-items: center;
+         }
+         .avg-weekly-bar span { display: flex; align-items: center; gap: 0.2rem; font-weight: 600; color: #111; }
+
+         .accordion-toggle {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             cursor: pointer;
+             font-size: 0.85rem;
+             font-weight: 700;
+             color: var(--text-muted);
+             padding: 0.3rem 0;
+             user-select: none;
+         }
+         .accordion-toggle .arrow { transition: transform 0.3s; display: inline-block; }
+         .accordion-toggle.open .arrow { transform: rotate(180deg); }
+
+         .accordion-body {
+             max-height: 0;
+             overflow: hidden;
+             transition: max-height 0.35s ease;
+             display: flex;
+             flex-direction: column;
+             gap: 0.75rem;
+         }
+         .accordion-body.open { max-height: 400px; }
+
     </style>
 </head>
 <body>
@@ -234,9 +269,9 @@
         let sortBy = "followers";
 
         const API_KEY = 'AIzaSyACI2fJb_s3iaMd77iQQOPEkKGGfukjnb4';
-        const CREATORS_URL  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/creators!A1:Z500?key=${API_KEY}`;
-        const WEEKLY_URL    = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/weekly!A1:Z500?key=${API_KEY}`;
-        const PRO_USERS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/pro_users!A1:Z500?key=${API_KEY}`;
+        const CREATORS_URL  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/creators!A1:Z500?key=${API_KEY}&t=${Date.now()}`;
+        const WEEKLY_URL    = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/weekly!A1:Z500?key=${API_KEY}&t=${Date.now()}`;
+        const PRO_USERS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/pro_users!A1:Z500?key=${API_KEY}&t=${Date.now()}`;
 
         function parseCSV(text) {
             const rows = text.split('\n').filter(r => r.trim());
@@ -344,7 +379,7 @@
             try {
                 console.log("Fetching...", CREATORS_URL);
                 const [cRes, wRes, pRes] = await Promise.all([
-                    fetch(CREATORS_URL), fetch(WEEKLY_URL), fetch(PRO_USERS_URL)
+                    fetch(CREATORS_URL, { cache: 'no-store' }), fetch(WEEKLY_URL, { cache: 'no-store' }), fetch(PRO_USERS_URL, { cache: 'no-store' })
                 ]);
                 console.log("Fetch status:", cRes.status, wRes.status, pRes.status);
 
@@ -521,11 +556,11 @@ cats.forEach(cat => {
             if (cp <= 4) {
                 if (er > 10)  return { name: "Reacher Max", emoji: "📡", caption: "Content is spreading wide and a lot of people are seeing this. Nice week — the reach is real." };
                 if (er >= 7)  return { name: "Reacher",     emoji: "📡", caption: "Content is getting out there and the views are building up. Keep going — momentum is on your side." };
-                else          return { name: "Quiet",        emoji: "🔇", caption: "This week felt quieter overall. No content really broke through — but that's okay, every creator has weeks like this." };
+                else          return { name: "Subtle",        emoji: "🔇", caption: "No strong signal this period. Content is present, but not breaking through yet." };
             }
             if (cp <= 7) {
                 if (er >= 7)  return { name: "Power Creator",     emoji: "⚡", caption: "Wide reach and real reactions. People are watching and actually responding. You did really well this week." };
-                else          return { name: "Converter",          emoji: "🎯", caption: "Small but responsive audience — the people who watch actually care. That's worth a lot. Good work." };
+                else          return { name: "Converter",          emoji: "🎯", caption: "Niche but responsive audience — the people who watch actually care. That's worth a lot. Good work." };
             }
             if (cp <= 10) {
                 if (er >= 7)  return { name: "Power Creator Max", emoji: "⚡", caption: "Wide reach and strong reactions. The audience is both big and engaged. That's a fantastic week — well done." };
@@ -597,7 +632,7 @@ cats.forEach(cat => {
                     <div class="score-box">
                         <div class="score-title">
                             Engagement Rate 
-                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">The percentage of viewers who took any action on a creator's content.</span>
+                            <span class="info-icon" style="cursor: pointer;" onclick="toggleTooltip('er-tip')">i</span><span id="er-tip" class="tooltiptext">A weighted percentage of average views that reflects how strongly viewers engage with a creator’s content on likes, favorites, comments and shares.</span>
                         </div> 
                         <div class="qs-val">${er.toFixed(2)}%</div>
                     </div>
@@ -606,7 +641,7 @@ cats.forEach(cat => {
                         <div class="score-title">
                             Conversion Power
                             <span class="info-icon" onclick="toggleTooltip(this)">i</span>
-                            <span class="tooltiptext">Measures how strongly a creator's content drives comments, favorites, and shares — the actions that signal real decision intent, not just passive viewing.</span>
+                            <span class="tooltiptext">Measures a creator’s ability to drive high-intent audience actions by weighting comments, favorites, and shares more heavily, with likes as a supporting signal. CP is scored on a 0–10 scale; the higher the value, the stronger their power to move people toward meaningful actions.</span>
                         </div>
                         <div class="qs-val">${calcConversionPower(d).toFixed(1)}/10</div>
                     </div>
@@ -616,30 +651,38 @@ cats.forEach(cat => {
                         const a  = getArchetype(er, cp);
                         return `
                         <div class="archetype-card">
-                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780481972/7Archetype_n7s5jf.png'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer; text-transform:none; color:#9CA3AF; border-color:#9CA3AF;">i</span></div>
+                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780755364/7_Archetypes_qdqf9n.png'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer; text-transform:none; color:#9CA3AF; border-color:#9CA3AF;">i</span></div>
                             <div class="archetype-name">${a.emoji} ${a.name}</div>
                             <div class="archetype-caption">${a.caption}</div>
                         </div>`;
                     })()}
 
-                    <div class="grid-2x2">
-                        <div class="metric-item"><div class="metric-label">Followers</div><div class="metric-value">${d.followers ? formatNum(d.followers) : '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Total Likes</div><div class="metric-value">${d.total_likes ? formatNum(d.total_likes) : '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Avg. Likes</div><div class="metric-value">${d.avg_likes ? formatNum(d.avg_likes) : '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Avg. Views</div><div class="metric-value">${d.avg_views ? formatNum(parseViews(d.avg_views)) : '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Avg. Comment</div><div class="metric-value">${d.avg_comments ? formatNum(parseInt(d.avg_comments)) : '-'}</div></div>
-                        <div class="metric-item"><div class="metric-label">Avg. Favorite</div><div class="metric-value">${d.avg_favorites ? formatNum(parseInt(d.avg_favorites)) : '-'}</div></div>
+                    <div class="avg-weekly-bar">
+                        👁 <span>${d.avg_views ? formatNum(parseViews(d.avg_views)) : '-'}</span>
+                        ❤️ <span>${d.avg_likes ? formatNum(d.avg_likes) : '-'}</span>
+                        ⭐ <span>${d.avg_favorites ? formatNum(parseInt(d.avg_favorites)) : '-'}</span>
+                        💬 <span>${d.avg_comments ? formatNum(parseInt(d.avg_comments)) : '-'}</span>
+                        ↗️ <span>${d.shares ? formatNum(d.shares) : '-'}</span>
                     </div>
 
-                    <div class="metric-item" style="margin-top:8px;">
-                        <div class="metric-label" style="font-weight:500;">Avg. Share</div>
-                        <div class="metric-value">${d.shares ? formatNum(d.shares) : '-'}</div>
+                    <div class="accordion-toggle" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
+                        Avg. Weekly <span class="arrow">▾</span>
                     </div>
 
-                    <p class="footer-note">Metrics calculated from last 10 contents</p>
-
-                    <hr class="divider">
-                    <div class="timestamp">Last update: ${d.last_update ? d.last_update.split('-').reverse().join('-') : 'N/A'}</div>
+                    <div class="accordion-body">
+                        <div class="grid-2x2">
+                            <div class="metric-item"><div class="metric-label">Avg. Views</div><div class="metric-value">${d.avg_views ? formatNum(parseViews(d.avg_views)) : '-'}</div></div>
+                            <div class="metric-item"><div class="metric-label">Avg. Likes</div><div class="metric-value">${d.avg_likes ? formatNum(d.avg_likes) : '-'}</div></div>
+                            <div class="metric-item"><div class="metric-label">Avg. Favorite</div><div class="metric-value">${d.avg_favorites ? formatNum(parseInt(d.avg_favorites)) : '-'}</div></div>
+                            <div class="metric-item"><div class="metric-label">Avg. Comment</div><div class="metric-value">${d.avg_comments ? formatNum(parseInt(d.avg_comments)) : '-'}</div></div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label" style="font-weight:500;">Avg. Share</div>
+                            <div class="metric-value">${d.shares ? formatNum(d.shares) : '-'}</div>
+                        </div>
+                        <p class="footer-note">Metrics calculated from last 10 contents</p>
+                        <div class="timestamp">Last update: ${d.last_update ? d.last_update.split('-').reverse().join('-') : 'N/A'}</div>
+                    </div>
 
                     <div style="display:flex; flex-direction:column; gap:8px; margin-top: auto;">
                         <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="tiktok-cta">↗ View on TikTok</a>
