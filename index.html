@@ -88,7 +88,7 @@
         .metric-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.2rem; }
         .metric-value { font-size: 20px; font-weight: 700; color: #000; }
 
-        .footer-note { font-size: 0.8rem; color: #78350F; text-align: center; background: #FFFBEB; padding: 0.4rem; border-radius: 6px; font-weight: 400; }
+        .footer-note { font-size: 0.75rem; color: #9CA3AF; text-align: left; background: none; padding: 0; border-radius: 0; font-weight: 400; }
         .divider { border: none; border-top: 1px dashed var(--border-color); margin: 0.2rem 0; }
         .timestamp { font-size: 0.8rem; color: var(--text-muted); }
         .btn-card-pro { width: 100%; padding: 0.7rem; background: #F3E8FF; color: #6B21A8; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; }
@@ -169,6 +169,26 @@
              gap: 0.75rem;
          }
          .accordion-body.open { max-height: 400px; }
+
+         .scroll-top-btn {
+             position: fixed;
+             bottom: 2rem;
+             right: 2rem;
+             width: 44px;
+             height: 44px;
+             border-radius: 50%;
+             background: #000;
+             color: #fff;
+             font-size: 1.2rem;
+             border: none;
+             cursor: pointer;
+             display: none;
+             align-items: center;
+             justify-content: center;
+             z-index: 999;
+             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+         }
+         .scroll-top-btn.visible { display: flex; }
 
     </style>
 </head>
@@ -657,32 +677,16 @@ cats.forEach(cat => {
                         </div>`;
                     })()}
 
+                    <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:0.3rem;">Avg. Last 10 Posts</div>
                     <div class="avg-weekly-bar">
-                        👁 <span>${d.avg_views ? formatNum(parseViews(d.avg_views)) : '-'}</span>
+                        👁 <span>${d.avg_views && d.avg_views !== '1' && parseViews(d.avg_views) > 1 ? formatNum(parseViews(d.avg_views)) : '-'}</span>
                         ❤️ <span>${d.avg_likes ? formatNum(d.avg_likes) : '-'}</span>
                         ⭐ <span>${d.avg_favorites ? formatNum(parseInt(d.avg_favorites)) : '-'}</span>
                         💬 <span>${d.avg_comments ? formatNum(parseInt(d.avg_comments)) : '-'}</span>
                         ↗️ <span>${d.shares ? formatNum(d.shares) : '-'}</span>
                     </div>
 
-                    <div class="accordion-toggle" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
-                        Avg. Weekly <span class="arrow">▾</span>
-                    </div>
-
-                    <div class="accordion-body">
-                        <div class="grid-2x2">
-                            <div class="metric-item"><div class="metric-label">Avg. Views</div><div class="metric-value">${d.avg_views ? formatNum(parseViews(d.avg_views)) : '-'}</div></div>
-                            <div class="metric-item"><div class="metric-label">Avg. Likes</div><div class="metric-value">${d.avg_likes ? formatNum(d.avg_likes) : '-'}</div></div>
-                            <div class="metric-item"><div class="metric-label">Avg. Favorite</div><div class="metric-value">${d.avg_favorites ? formatNum(parseInt(d.avg_favorites)) : '-'}</div></div>
-                            <div class="metric-item"><div class="metric-label">Avg. Comment</div><div class="metric-value">${d.avg_comments ? formatNum(parseInt(d.avg_comments)) : '-'}</div></div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-label" style="font-weight:500;">Avg. Share</div>
-                            <div class="metric-value">${d.shares ? formatNum(d.shares) : '-'}</div>
-                        </div>
-                        <p class="footer-note">Metrics calculated from last 10 contents</p>
                         <div class="timestamp">Last update: ${d.last_update ? d.last_update.split('-').reverse().join('-') : 'N/A'}</div>
-                    </div>
 
                     <div style="display:flex; flex-direction:column; gap:8px; margin-top: auto;">
                         <a href="https://www.tiktok.com/@${d.handle}" target="_blank" class="tiktok-cta">↗ View on TikTok</a>
@@ -721,6 +725,13 @@ cats.forEach(cat => {
     <div class="img-modal-overlay" id="imgModalOverlay" onclick="this.classList.remove('active')">
         <img id="imgModalContent" src="">
     </div>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+    <script>
+        window.addEventListener('scroll', () => {
+            document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
+        });
+    </script>
 
 </body>
 </html>
