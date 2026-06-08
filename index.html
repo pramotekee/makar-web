@@ -18,6 +18,7 @@
             --tier-rise: #FF9300;
             --tier-growth: #10B981;
             --tier-lead: #2563EB;
+            --tier-macro: #7C3AED;
             --bg-gray: #F5F5F0;
             --card-bg: #FFFFFF;
             --text-muted: #6B7280;
@@ -55,6 +56,7 @@
         .btn-tier.active[data-tier="rise"] { background-color: var(--tier-rise); color: #fff; }
         .btn-tier.active[data-tier="growth"] { background-color: var(--tier-growth); color: #fff; }
         .btn-tier.active[data-tier="lead"] { background-color: var(--tier-lead); color: #fff; }
+        .btn-tier.active[data-tier="macro"] { background-color: var(--tier-macro); color: #fff; }
 
         .sort-row { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
         .select-sort { background: #fff; border: 1px solid var(--border-color); padding: 0.4rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; outline: none; }
@@ -75,6 +77,7 @@
         .badge-rise { background-color: var(--tier-rise); color: #fff; }
         .badge-growth { background-color: var(--tier-growth); color: #fff; }
         .badge-lead { background-color: var(--tier-lead); color: #fff; }
+        .badge-macro { background-color: var(--tier-macro); color: #fff; }
 
         .score-box { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #F5E6C4 0%, #DFB76C 100%); padding: 12px 16px; border-radius: 8px; border: 1px solid #D4AF37; }
         .score-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 700; color: #000; position: relative; }
@@ -190,13 +193,38 @@
          }
          .scroll-top-btn.visible { display: flex; }
 
+         /* Footer */
+         .site-footer {
+             background: #FF9300;
+             padding: 1.5rem 1rem;
+             text-align: center;
+             margin-top: 3rem;
+         }
+         .site-footer a {
+             color: #000000;
+             text-decoration: none;
+             font-weight: 600;
+             font-size: 0.9rem;
+             margin: 0 1rem;
+             display: inline-block;
+         }
+         .site-footer a:hover {
+             text-decoration: underline;
+         }
+         .site-footer-copy {
+             font-size: 0.78rem;
+             color: #000;
+             opacity: 0.6;
+             margin-top: 0.75rem;
+         }
+
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">MAKAR</div>
-        <button class="btn-pro" id="triggerProNav">Access PRO</button>
+        <button class="btn-pro" id="triggerProNav">PRO Login</button>
     </nav>
 
     <header class="hero">
@@ -236,6 +264,7 @@
                    <button class="btn-tier" data-tier="rise">Rise 10K–39K</button>
                    <button class="btn-tier" data-tier="growth">Growth 40K–79K</button>
                    <button class="btn-tier" data-tier="lead">Lead 80K–100K</button>
+                   <button class="btn-tier" data-tier="macro">Macro &gt;100K</button>
                </div>
            </div>
 
@@ -258,22 +287,35 @@
                </div>
            </div>
 
+        <p id="resultCount" style="font-size:0.9rem; font-weight:600; color:#4B5563; margin-top:1.5rem; margin-bottom:0.5rem;"></p>
         <section class="creator-grid" id="creatorsGrid"></section>
     </main>
 
     <div class="pro-modal-overlay" id="proModalOverlay">
         <div class="pro-modal-card">
             <button class="close-btn" onclick="closeProModal()">&times;</button>
-            <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;">Access PRO</h2>
+            <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;">MAKAR PRO Login</h2>
+            <div style="text-align:center; margin-bottom:20px;">
+                <a href="https://buy.stripe.com/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" target="_blank"
+                   style="background:#0A1A4A; color:#FFD700; border:none; border-radius:20px; padding:0.4rem 1.1rem; font-size:0.85rem; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block;">
+                    Unlock PRO Access
+                </a>
+            </div>
             <div id="loginErrorMessage" class="error-message"></div>
             <div style="text-align: left;">
                 <input type="text" id="companyNameInput" placeholder="Company name" class="modal-input">
                 <input type="password" id="passwordInput" placeholder="Password" class="modal-input">
             </div>
             <button class="btn-submit-pro" onclick="validateProUser()">GO</button>
-            <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-                <a href="https://linktr.ee/popzilar" target="_blank" style="color: #0A1A4A; font-weight: 700; text-decoration: underline;">Contact us</a> to access PRO
-            </p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+                <p style="font-size: 0.9rem; color: #666; margin:0;">
+                    <a href="https://forms.gle/6KSyUi66WhiSJ4Fu8" target="_blank" style="color: #0A1A4A; font-weight: 700; text-decoration: underline;">Contact us</a> to access PRO
+                </p>
+                <button onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780830904/PRO_Pop_up_sy0kkw.png'; document.getElementById('imgModalOverlay').classList.add('active');"
+                    style="background:#0A1A4A; color:#FFD700; border:none; border-radius:20px; padding:0.4rem 1.1rem; font-size:0.85rem; font-weight:700; cursor:pointer;">
+                    What you get →
+                </button>
+            </div>
         </div>
     </div>
 
@@ -464,6 +506,7 @@ cats.forEach(cat => {
                         if (rawGroup === "jatum" || rawGroup === "rise")     mappedGroup = "Rise";
                         else if (rawGroup === "dao" || rawGroup === "growth") mappedGroup = "Growth";
                         else if (rawGroup === "yama" || rawGroup === "lead") mappedGroup = "Lead";
+                        else if (rawGroup === "macro") mappedGroup = "Macro";
 
                         const favs = parseInt(w.avg_favorites) || 0;
                         const comms = parseInt(w.avg_comments) || 0;
@@ -621,6 +664,8 @@ cats.forEach(cat => {
             if (sortBy === "score") filtered.sort((a, b) => calcConversionPower(b) - calcConversionPower(a));
             else if (sortBy === "followers") filtered.sort((a, b) => b.followers - a.followers);
 
+            document.getElementById('resultCount').textContent = `${filtered.length} creators found`;
+
             if (filtered.length === 0) {
                 grid.innerHTML = '<p style="text-align:center; width:100%; padding: 3rem 0; color: #6B7280;">No creators match your current filters.</p>';
                 return;
@@ -671,11 +716,22 @@ cats.forEach(cat => {
                         const a  = getArchetype(er, cp);
                         return `
                         <div class="archetype-card">
-                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780755364/7_Archetypes_qdqf9n.png'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer; text-transform:none; color:#9CA3AF; border-color:#9CA3AF;">i</span></div>
+                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780798265/7_Archetypes_sqbduf.png'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer; text-transform:none; color:#9CA3AF; border-color:#9CA3AF;">i</span></div>
                             <div class="archetype-name">${a.emoji} ${a.name}</div>
                             <div class="archetype-caption">${a.caption}</div>
                         </div>`;
                     })()}
+
+                    <div class="grid-2x2">
+                        <div class="metric-item">
+                            <div class="metric-label">Followers</div>
+                            <div class="metric-value">${formatNum(d.followers)}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Total Likes</div>
+                            <div class="metric-value">${formatNum(d.total_likes)}</div>
+                        </div>
+                    </div>
 
                     <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:0.3rem;">Avg. Last 10 Posts</div>
                     <div class="avg-weekly-bar">
@@ -732,6 +788,13 @@ cats.forEach(cat => {
             document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
         });
     </script>
+
+    <footer class="site-footer">
+        <a href="https://aromatic-equinox-5e8.notion.site/About-Us-37905e072cdf80969b70f597d7ed2d46" target="_blank">About Us</a>
+        <a href="https://aromatic-equinox-5e8.notion.site/Terms-of-Services-37905e072cdf80c6a138c3d9b15debce" target="_blank">Terms of Service</a>
+        <a href="https://aromatic-equinox-5e8.notion.site/Privacy-Policy-37905e072cdf80f9bf83fc7b5da1992d" target="_blank">Privacy Policy</a>
+        <div class="site-footer-copy">© 2025 MAKAR. All rights reserved.</div>
+    </footer>
 
 </body>
 </html>
