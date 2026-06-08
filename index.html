@@ -218,6 +218,48 @@
              margin-top: 0.75rem;
          }
 
+         /* Wall View */
+         .wall-grid {
+             display: flex;
+             flex-wrap: wrap;
+             gap: 12px;
+             padding: 1rem 0;
+         }
+         .wall-bubble {
+             position: relative;
+             cursor: pointer;
+             transition: transform 0.2s;
+         }
+         .wall-bubble img {
+             border-radius: 50%;
+             object-fit: cover;
+             display: block;
+             border: 3px solid #ccc;
+         }
+         .wall-bubble.tier-rise   img { border-color: #FF9300; }
+         .wall-bubble.tier-growth img { border-color: #22c55e; }
+         .wall-bubble.tier-lead   img { border-color: #3b82f6; }
+         .wall-bubble.tier-macro  img { border-color: #a855f7; }
+
+         .wall-bubble:hover { transform: scale(1.15); z-index: 10; }
+         .wall-bubble .bubble-tooltip {
+             display: none;
+             position: absolute;
+             bottom: 110%;
+             left: 50%;
+             transform: translateX(-50%);
+             background: #0A1A4A;
+             color: #FFD700;
+             font-size: 0.7rem;
+             font-weight: 700;
+             padding: 4px 8px;
+             border-radius: 8px;
+             white-space: nowrap;
+             z-index: 20;
+          }
+          .wall-bubble:hover .bubble-tooltip { display: block; }
+          #wallToggle.active { background: #0A1A4A; color: #FFD700; }
+
     </style>
 </head>
 <body>
@@ -284,6 +326,12 @@
                <div>
                    <button class="btn-filter btn-sort active" data-sort="followers">Followers</button>
                    <button class="btn-filter btn-sort" data-sort="score">Conversion Power</button>
+               </div>
+               <div class="filter-group" style="margin-top:1rem;">
+                   <span class="filter-label">View</span>
+                   <div>
+                       <button class="btn-filter" id="wallToggle" onclick="toggleWallView()">🔲 Creator Wall</button>
+                   </div>
                </div>
            </div>
 
@@ -671,6 +719,8 @@ cats.forEach(cat => {
                 return;
             }
 
+            if (isWallView) { renderWall(filtered); return; }
+            grid.className = 'creator-grid';
             grid.innerHTML = filtered.map((d, i) => {
                 const views = parseInt(d.avg_views) || 1;
                 const er = ((parseInt(d.avg_favorites) || 0) + (parseInt(d.avg_comments) || 0) + (parseInt(d.shares) || 0) + (parseInt(d.avg_likes) || 0)) / views * 100 || 0;
@@ -787,6 +837,36 @@ cats.forEach(cat => {
         window.addEventListener('scroll', () => {
             document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
         });
+
+        let isWallView = false;
+
+        function toggleWallView() {
+            isWallView = !isWallView;
+            const btn = document.getElementById('wallToggle');
+            btn.classList.toggle('active', isWallView);
+            btn.textContent = isWallView ? '🔲 Card View' : '🔲 Creator Wall';
+            render();
+        }
+
+        function renderWall(data) {
+            const grid = document.getElementById('creatorsGrid');
+            grid.className = 'wall-grid';
+            grid.innerHTML = data.map(c => {
+                const tierClass = 'tier-' + (c.group || 'rise').toLowerCase();
+                // size ตาม ER: min 48px, max 80px
+                const size = Math.min(80, Math.max(48, 48 + Math.round((c.er || 0) * 1.5)));
+                const img = c.profile_img_url
+                    ? `<img src="${c.profile_img_url}" width="${size}" height="${size}">`
+                    : `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#0A1A4A;display:flex;align-items:center;justify-content:center;color:#FFD700;font-weight:700;font-size:${size*0.3}px;">${(c.name||'?')[0]}</div>`;
+                const cp = c.trigger_score ? (c.trigger_score).toFixed(1) : '-';
+                const er = c.er ? c.er.toFixed(1) : '-';
+                return `
+                <div class="wall-bubble ${tierClass}" onclick="openCreatorCard(${c.rank})">
+                    <div class="bubble-tooltip">${c.name}<br>ER ${er}% · CP ${cp}/10</div>
+                    ${img}
+                </div>`;
+             }).join('');
+          }
     </script>
 
     <footer class="site-footer">
