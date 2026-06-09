@@ -652,7 +652,7 @@ cats.forEach(cat => {
         function calcConversionPower(d) {
             const comments = parseInt(d.avg_comments) || 0;
             const favorites = parseInt(d.avg_favorites) || 0;
-            const shares = parseInt(d.shares) || 0;
+            const shares = parseInt(d.avg_shares) || parseInt(d.shares) || 0;
             const likes = parseInt(d.avg_likes) || 0;
             const views = parseViews(d.avg_views);
 
