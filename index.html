@@ -670,11 +670,11 @@ cats.forEach(cat => {
                 else          return { name: "Subtle",        emoji: "🔇", caption: "No strong signal this period. Content is present, but not breaking through yet." };
             }
             if (cp <= 7) {
-                if (er >= 7)  return { name: "Power Creator",     emoji: "⚡", caption: "Wide reach and real reactions. People are watching and actually responding. You did really well this week." };
+                if (er >= 7)  return { name: "Amplifier",     emoji: "⚡", caption: "Wide reach and real reactions. People are watching and actually responding. You did really well this week." };
                 else          return { name: "Converter",          emoji: "🎯", caption: "Niche but responsive audience — the people who watch actually care. That's worth a lot. Good work." };
             }
             if (cp <= 10) {
-                if (er >= 7)  return { name: "Power Creator Max", emoji: "⚡", caption: "Wide reach and strong reactions. The audience is both big and engaged. That's a fantastic week — well done." };
+                if (er >= 7)  return { name: "Amplifier Max", emoji: "⚡", caption: "Wide reach and strong reactions. The audience is both big and engaged. That's a fantastic week — well done." };
                 else          return { name: "Converter Max",      emoji: "🎯", caption: "Strong reactions from a focused audience. They're genuinely into your content — and that kind of connection is hard to build." };
             }
         }
@@ -766,7 +766,7 @@ cats.forEach(cat => {
                         const a  = getArchetype(er, cp);
                         return `
                         <div class="archetype-card">
-                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780798265/7_Archetypes_sqbduf.png'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer; text-transform:none; color:#9CA3AF; border-color:#9CA3AF;">i</span></div>
+                            <div class="archetype-label">Performance Digest <span class="info-icon" data-modal="img" onclick="document.getElementById('imgModalContent').src='https://res.cloudinary.com/doyhjtbil/image/upload/v1780991321/7_Archetypes_ycovg8.png'; document.getElementById('imgModalOverlay').classList.add('active')" style="cursor:pointer; text-transform:none; color:#9CA3AF; border-color:#9CA3AF;">i</span></div>
                             <div class="archetype-name">${a.emoji} ${a.name}</div>
                             <div class="archetype-caption">${a.caption}</div>
                         </div>`;
